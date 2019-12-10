@@ -1,0 +1,85 @@
+﻿Построение начато 16.01.2019 18:27:56.
+     1>Проект "D:\Debian\Steam\sdk\mp_10.09.2015\src\mathlib\mathlib.vcxproj" в узле 2 (целевые объекты build).
+     1>InitializeBuildStatus:
+         Создание ".\Release\.\mathlib.unsuccessfulbuild", так как было задано "AlwaysCreate".
+       PreBuildEvent:
+         if EXIST ..\lib\public\.\mathlib.lib ( for /f "delims=" %%A in ('attrib "..\lib\public\.\mathlib.lib"') do set valveTmpIsReadOnly="%%A"
+         ) else ( if not EXIST ..\lib\public\. mkdir ..\lib\public\. )
+         set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%
+         if "%valveTmpIsReadOnlyLetter%"=="R" (
+             attrib -r ..\lib\public\.\mathlib.lib
+             ..\devtools\bin\gnu\touch.exe -d "1999-01-01" ..\lib\public\.\mathlib.lib
+             attrib +r ..\lib\public\.\mathlib.lib
+         )
+         if exist "..\devtools\bin\vpc.exe" "..\devtools\bin\vpc.exe" -crc2 "mathlib.vcxproj"
+         if ERRORLEVEL 1 exit /b 1
+         
+         :VCEnd
+       CustomBuild:
+         Running VPC CRC Check - mathlib.vpc
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\common /I..\public /I..\public\tier0 /I..\public\tier1 /I..\public\mathlib /Z7 /nologo /W4 /WX /MP /O2 /Ob2 /Oi /Ot /Oy- /D VPC /D RAD_TELEMETRY_DISABLED /D WIN32 /D _WIN32 /D NDEBUG /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _ALLOW_RUNTIME_LIBRARY_MISMATCH /D _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH /D _ALLOW_MSC_VER_MISMATCH /D _MBCS /D COMPILER_MSVC32 /D COMPILER_MSVC32 /D COMPILER_MSVC /D _DLL_EXT=.dll /D LIBNAME=mathlib /D BINK_VIDEO /D AVI_VIDEO /D WMV_VIDEO /D DEV_BUILD /D FRAME_POINTER_OMISSION_DISABLED /D MATHLIB_LIB /D _EXTERNAL_DLL_EXT=.dll /D VPCGAMECAPS=HL2MP /D PROJECTDIR=D:\Debian\Steam\sdk\mp_10.09.2015\src\mathlib /D _DLL_EXT=.dll /D SOURCE1=1 /D VPCGAME=hl2mp /GF /Gm- /MT /GS /Gy /arch:SSE /fp:fast /Zc:wchar_t /Zc:forScope /GR /openmp- /Fo".\Release\.\/" /Fd".\Release\.\/vc100.pdb" /Gd /TP /wd4316 /analyze- /FC /errorReport:prompt 3dnow.cpp almostequal.cpp anorms.cpp bumpvects.cpp color_conversion.cpp halton.cpp IceKey.cpp imagequant.cpp lightdesc.cpp mathlib_base.cpp polyhedron.cpp powsse.cpp quantize.cpp randsse.cpp simdvectormatrix.cpp sparse_convolution_noise.cpp spherical.cpp sse.cpp sseconst.cpp ssenoise.cpp vector.cpp vmatrix.cpp  /Zo /Gw /Zc:inline
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zo"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Gw"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zc:inline"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zo"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Gw"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zc:inline"
+         3dnow.cpp
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zo"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Gw"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zc:inline"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zo"
+         almostequal.cpp
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Gw"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zc:inline"
+         anorms.cpp
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zo"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Gw"
+     1>cl : командная строка warning D9002: пропуск неизвестного параметра "/Zc:inline"
+         bumpvects.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         color_conversion.cpp
+         halton.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         IceKey.cpp
+         imagequant.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         lightdesc.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         mathlib_base.cpp
+         polyhedron.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         powsse.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         quantize.cpp
+         randsse.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         simdvectormatrix.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         sparse_convolution_noise.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         spherical.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         sse.cpp
+         sseconst.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         ssenoise.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+         vector.cpp
+         vmatrix.cpp
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>d:\debian\steam\sdk\mp_10.09.2015\src\public\tier0\platform.h(268): fatal error C1189: #error :  You must install VS 2010 SP1
+     1>Построение проекта "D:\Debian\Steam\sdk\mp_10.09.2015\src\mathlib\mathlib.vcxproj" завершено (целевые объекты build) с ошибкой.
+
+СБОЙ построения.
+
+Затраченное время: 00:00:02.60
