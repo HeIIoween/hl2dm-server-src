@@ -123,9 +123,9 @@ BEGIN_DATADESC( CBaseHelicopter )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CBaseHelicopter, DT_BaseHelicopter )
+/*IMPLEMENT_SERVERCLASS_ST( CBaseHelicopter, DT_BaseHelicopter )
 	SendPropTime( SENDINFO( m_flStartupTime ) ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 
 //-----------------------------------------------------------------------------
@@ -1269,7 +1269,7 @@ void CBaseHelicopter::TraceAttack( const CTakeDamageInfo &info, const Vector &ve
 	// Take no damage from trace attacks unless it's blast damage. RadiusDamage() sometimes calls
 	// TraceAttack() as a means for delivering blast damage. Usually when the explosive penetrates
 	// the target. (RPG missiles do this sometimes).
-	if( info.GetDamageType() & (DMG_BLAST|DMG_AIRBOAT) )
+	//if( info.GetDamageType() & (DMG_BLAST|DMG_AIRBOAT) )
 	{
 		BaseClass::TraceAttack( info, vecDir, ptr, pAccumulator );
 	}

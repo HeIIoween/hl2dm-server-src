@@ -203,11 +203,11 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_vortigaunt, CNPC_Vortigaunt );
 
-IMPLEMENT_SERVERCLASS_ST( CNPC_Vortigaunt, DT_NPC_Vortigaunt )
+/*IMPLEMENT_SERVERCLASS_ST( CNPC_Vortigaunt, DT_NPC_Vortigaunt )
 	SendPropTime( SENDINFO (m_flBlueEndFadeTime ) ),
 	SendPropBool( SENDINFO( m_bIsBlue )),
 	SendPropBool( SENDINFO ( m_bIsBlack ) ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 // for special behavior with rollermines
 static bool IsRoller( CBaseEntity *pRoller )
@@ -442,7 +442,7 @@ void CNPC_Vortigaunt::RunTask( const Task_t *pTask )
 	case TASK_VORTIGAUNT_WAIT_FOR_PLAYER:
 	{
 		// Wait for the player to get near (before starting the bugbait sequence)
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+		CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
 		if ( pPlayer != NULL )
 		{
 			GetMotor()->SetIdealYawToTargetAndUpdate( pPlayer->GetAbsOrigin(), AI_KEEP_YAW_SPEED );
@@ -897,7 +897,7 @@ void CNPC_Vortigaunt::HandleAnimEvent( animevent_t *pEvent )
 				// HACK: If we've still failed, just spawn it on the player 
 				if ( i == iNumAttempts )
 				{
-					CBasePlayer	*pPlayer = AI_GetSinglePlayer();
+					CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
 					if ( pPlayer )
 					{
 						vecSpawnOrigin = pPlayer->WorldSpaceCenter();
@@ -1686,7 +1686,7 @@ void CNPC_Vortigaunt::MaintainHealSchedule( void )
 		return;
 
 	// For now, we only heal the player
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
 	if ( pPlayer == NULL )
 		return;
 
@@ -2329,7 +2329,7 @@ Disposition_t CNPC_Vortigaunt::IRelationType( CBaseEntity *pTarget )
 		if( GetAbsOrigin().DistToSqr(pTarget->GetAbsOrigin()) < VORTIGAUNT_FEAR_ZOMBIE_DIST_SQR )
 		{
 			// Be afraid of a zombie that's near if I'm not allowed to dodge. This will make Alyx back away.
-			return D_FR;
+			//return D_FR;
 		}
 	}
 
@@ -2343,7 +2343,7 @@ Disposition_t CNPC_Vortigaunt::IRelationType( CBaseEntity *pTarget )
 bool CNPC_Vortigaunt::HealGestureHasLOS( void )
 {
 	//For now the player is always our target
-	CBaseEntity *pTargetEnt = AI_GetSinglePlayer();
+	CBasePlayer *pTargetEnt = UTIL_GetNearestPlayer( GetAbsOrigin() );
 	if ( pTargetEnt == NULL )
 		return false;
 
@@ -2635,8 +2635,9 @@ void CNPC_Vortigaunt::SetScriptedScheduleIgnoreConditions( Interruptability_t in
 //-----------------------------------------------------------------------------
 int CNPC_Vortigaunt::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
-	if( info.GetDamageType() & (DMG_CRUSH | DMG_BURN) )
-		return 0;
+	//Смерть от дисолве шара и огня (ломают скрипты)
+	//if( info.GetDamageType() & (DMG_CRUSH | DMG_BURN) )
+	//	return 0;
 
 	// vital vortigaunts (eg the vortigoth in ep2) take less damage from explosions
 	// so that zombines don't blow them up disappointingly. They take less damage
@@ -3061,9 +3062,9 @@ BEGIN_DATADESC( CVortigauntChargeToken )
 	DEFINE_ENTITYFUNC( SeekTouch ),
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )
+/*IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )
 	SendPropBool( SENDINFO(m_bFadeOut) ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 CVortigauntChargeToken::CVortigauntChargeToken( void ) :
 m_hTarget( NULL )
@@ -3292,9 +3293,9 @@ BEGIN_DATADESC( CVortigauntEffectDispel )
 	DEFINE_FIELD( m_bFadeOut, FIELD_BOOLEAN ),
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CVortigauntEffectDispel, DT_VortigauntEffectDispel )
+/*IMPLEMENT_SERVERCLASS_ST( CVortigauntEffectDispel, DT_VortigauntEffectDispel )
 	SendPropBool( SENDINFO(m_bFadeOut) ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 CVortigauntEffectDispel::CVortigauntEffectDispel( void )
 {

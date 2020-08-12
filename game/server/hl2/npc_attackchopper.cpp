@@ -1953,25 +1953,20 @@ void CNPC_AttackHelicopter::AimCloseToTargetButMiss( CBaseEntity *pTarget, float
 //-----------------------------------------------------------------------------
 // Make sure we don't hit too many times
 //-----------------------------------------------------------------------------
-void CNPC_AttackHelicopter::FireBullets( const FireBulletsInfo_t &info )
+void CNPC_AttackHelicopter::FireBullets( const FireBulletsInfo_t &oldinfo )
 {
+	FireBulletsInfo_t info;
+	info.m_iShots = 10;
+	info.m_iAmmoType= GetAmmoDef()->Index("HelicopterGun"); 
+	info.m_vecSrc = oldinfo.m_vecSrc;
+	info.m_vecDirShooting = GetShootEnemyDir(info.m_vecSrc,true);
+	info.m_vecSpread = VECTOR_CONE_7DEGREES;
 	// Use this to count the number of hits in a burst
 	bool bIsPlayer = GetEnemy() && GetEnemy()->IsPlayer();
 	if ( !bIsPlayer )
 	{
 		BaseClass::FireBullets( info );
 		return;
-	}
-
-	if ( !GetEnemyVehicle() && !IsDeadlyShooting() )
-	{
-		if ( m_nBurstHits >= m_nMaxBurstHits )
-		{
-			FireBulletsInfo_t actualInfo = info;
-			actualInfo.m_pAdditionalIgnoreEnt = GetEnemy();
-			BaseClass::FireBullets( actualInfo );
-			return;
-		}
 	}
 
 	CBasePlayer *pPlayer = assert_cast<CBasePlayer*>(GetEnemy());
@@ -3481,9 +3476,9 @@ void CNPC_AttackHelicopter::TraceAttack( const CTakeDamageInfo &info, const Vect
 	// Take no damage from trace attacks unless it's blast damage. RadiusDamage() sometimes calls
 	// TraceAttack() as a means for delivering blast damage. Usually when the explosive penetrates
 	// the target. (RPG missiles do this sometimes).
-	if ( ( info.GetDamageType() & DMG_AIRBOAT ) || 
-		 ( info.GetInflictor()->Classify() == CLASS_MISSILE ) || 
-		 ( info.GetAttacker()->Classify() == CLASS_MISSILE ) )
+	//if ( ( info.GetDamageType() & DMG_AIRBOAT ) || 
+	//	 ( info.GetInflictor()->Classify() == CLASS_MISSILE ) || 
+	//	 ( info.GetAttacker()->Classify() == CLASS_MISSILE ) )
 	{
 		BaseClass::BaseClass::TraceAttack( info, vecDir, ptr, pAccumulator );
 	}
@@ -3496,14 +3491,14 @@ void CNPC_AttackHelicopter::TraceAttack( const CTakeDamageInfo &info, const Vect
 int CNPC_AttackHelicopter::OnTakeDamage( const CTakeDamageInfo &info )
 {
 	// We don't take blast damage from anything but the airboat or missiles (or myself!)
-	if( info.GetInflictor() != this )
+	/*if( info.GetInflictor() != this )
 	{
 		if ( ( ( info.GetDamageType() & DMG_AIRBOAT ) == 0 ) && 
 			( info.GetInflictor()->Classify() != CLASS_MISSILE ) && 
 			( info.GetAttacker()->Classify() != CLASS_MISSILE ) )
 			return 0;
-	}
-
+	}*/
+	
 	if ( m_bIndestructible )
 	{
 		if ( GetHealth() < info.GetDamage() )

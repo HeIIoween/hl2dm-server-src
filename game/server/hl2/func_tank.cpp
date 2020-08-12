@@ -3243,7 +3243,7 @@ private:
 	CNetworkVar( Vector, m_vecSurfaceNormal );
 
 	DECLARE_DATADESC();
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 };
 
 LINK_ENTITY_TO_CLASS( mortarshell, CMortarShell );
@@ -3268,11 +3268,11 @@ BEGIN_DATADESC( CMortarShell )
 	DEFINE_FUNCTION( FadeThink ),
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CMortarShell, DT_MortarShell )
+/*IMPLEMENT_SERVERCLASS_ST( CMortarShell, DT_MortarShell )
 	SendPropFloat( SENDINFO( m_flLifespan ), -1, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO( m_flRadius ), -1, SPROP_NOSCALE ),
 	SendPropVector( SENDINFO( m_vecSurfaceNormal ), 0, SPROP_NORMAL ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 #define	MORTAR_TEST_RADIUS	16.0f
 

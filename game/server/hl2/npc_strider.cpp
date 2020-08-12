@@ -277,7 +277,7 @@ enum
 //
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_SERVERCLASS_ST(CNPC_Strider, DT_NPC_Strider)
+/*IMPLEMENT_SERVERCLASS_ST(CNPC_Strider, DT_NPC_Strider)
 	SendPropVector(SENDINFO(m_vecHitPos), -1, SPROP_COORD),
 	SendPropVector( SENDINFO_NETWORKARRAYELEM( m_vecIKTarget, 0 ), -1, SPROP_COORD ),
 	SendPropVector( SENDINFO_NETWORKARRAYELEM( m_vecIKTarget, 1 ), -1, SPROP_COORD ),
@@ -285,7 +285,7 @@ IMPLEMENT_SERVERCLASS_ST(CNPC_Strider, DT_NPC_Strider)
 	SendPropVector( SENDINFO_NETWORKARRAYELEM( m_vecIKTarget, 3 ), -1, SPROP_COORD ),
 	SendPropVector( SENDINFO_NETWORKARRAYELEM( m_vecIKTarget, 4 ), -1, SPROP_COORD ),
 	SendPropVector( SENDINFO_NETWORKARRAYELEM( m_vecIKTarget, 5 ), -1, SPROP_COORD ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 //-------------------------------------
 
@@ -3177,7 +3177,7 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 #endif
 
-	return 0;
+	return BaseClass::OnTakeDamage_Alive( info );
 }
 
 //---------------------------------------------------------

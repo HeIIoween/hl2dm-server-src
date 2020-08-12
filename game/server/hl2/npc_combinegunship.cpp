@@ -220,7 +220,7 @@ public:
 	~CNPC_CombineGunship( void );
 
 	DECLARE_DATADESC();
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DEFINE_CUSTOM_AI;
 
 	bool	ShouldUseFixedPatrolLogic() { return true; }
@@ -411,9 +411,9 @@ private:
 
 LINK_ENTITY_TO_CLASS( npc_combinegunship, CNPC_CombineGunship );
 
-IMPLEMENT_SERVERCLASS_ST( CNPC_CombineGunship, DT_CombineGunship )
+/*IMPLEMENT_SERVERCLASS_ST( CNPC_CombineGunship, DT_CombineGunship )
 	SendPropVector(SENDINFO(m_vecHitPos), -1, SPROP_COORD),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 BEGIN_DATADESC( CNPC_CombineGunship )
 
@@ -524,6 +524,8 @@ void CNPC_CombineGunship::CreateBellyBlastEnergyCore( void )
 	pCore->SetScale( 4.0f );
 }
 
+ConVar	sk_combinegunship_health( "sk_combinegunship_health","5600");
+
 //------------------------------------------------------------------------------
 // Purpose:
 //------------------------------------------------------------------------------
@@ -551,7 +553,7 @@ void CNPC_CombineGunship::Spawn( void )
 	SetHullType(HULL_LARGE_CENTERED);
 	SetHullSizeNormal();
 
-	m_iMaxHealth = m_iHealth = 100;
+	m_iMaxHealth = m_iHealth = sk_combinegunship_health.GetInt();
 
 	m_flFieldOfView = -0.707; // 270 degrees
 
@@ -2861,7 +2863,7 @@ void CNPC_CombineGunship::TraceAttack( const CTakeDamageInfo &info, const Vector
 #endif
 		}
 
-		return;
+		//return;
 	}
 
 	BaseClass::TraceAttack( info, vecDir, ptr, pAccumulator );
@@ -2913,7 +2915,7 @@ void CNPC_CombineGunship::FireDamageOutputsUpto( int iDamageNumber )
 int	CNPC_CombineGunship::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 {
 	// Allow npc_kill to kill me
-	if ( inputInfo.GetDamageType() != DMG_GENERIC )
+	/*if ( inputInfo.GetDamageType() != DMG_GENERIC )
 	{
 		// Ignore mundane bullet damage.
 		if ( ( inputInfo.GetDamageType() & DMG_BLAST ) == false )
@@ -2922,7 +2924,7 @@ int	CNPC_CombineGunship::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 		// Ignore blasts less than this amount
 		if ( inputInfo.GetDamage() < GUNSHIP_MIN_DAMAGE_THRESHOLD )
 			return 0;
-	}
+	}*/
 
 	// Only take blast damage
 	CTakeDamageInfo info = inputInfo;

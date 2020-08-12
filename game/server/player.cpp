@@ -77,7 +77,7 @@
 // NVNT haptic utils
 #include "haptics/haptic_utils.h"
 
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 #include "combine_mine.h"
 #include "weapon_physcannon.h"
 #endif
@@ -914,11 +914,8 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 				return;
 
 			// Prevent team damage here so blood doesn't appear
-			if ( info.GetAttacker()->IsPlayer() )
-			{
-				if ( !g_pGameRules->FPlayerCanTakeDamage( this, info.GetAttacker(), info ) )
-					return;
-			}
+			if ( !g_pGameRules->FPlayerCanTakeDamage( this, info.GetAttacker(), info ) )
+				return;
 		}
 
 		SetLastHitGroup( ptr->hitgroup );
@@ -2796,7 +2793,7 @@ bool CBasePlayer::IsUseableEntity( CBaseEntity *pEntity, unsigned int requiredCa
 bool CBasePlayer::CanPickupObject( CBaseEntity *pObject, float massLimit, float sizeLimit )
 {
 	// UNDONE: Make this virtual and move to HL2 player
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 	//Must be valid
 	if ( pObject == NULL )
 		return false;
@@ -2828,7 +2825,7 @@ bool CBasePlayer::CanPickupObject( CBaseEntity *pObject, float massLimit, float 
 	}
 
 
-	//Msg( "Target mass: %f\n", pPhys->GetMass() );
+	Msg( "Target mass: %f\n", objectMass );
 
 	//Must be under our threshold weight
 	if ( massLimit > 0 && objectMass > massLimit )

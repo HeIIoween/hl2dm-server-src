@@ -22,7 +22,7 @@
 #include "filters.h"
 #include "SpriteTrail.h"
 #include "decals.h"
-#include "hl2_player.h"
+#include "player.h"
 #include "eventqueue.h"
 #include "physics_collisionevent.h"
 #include "gamestats.h"
@@ -230,12 +230,12 @@ BEGIN_DATADESC( CPropCombineBall )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CPropCombineBall, DT_PropCombineBall )
+/*IMPLEMENT_SERVERCLASS_ST( CPropCombineBall, DT_PropCombineBall )
 	SendPropBool( SENDINFO( m_bEmit ) ),
 	SendPropFloat( SENDINFO( m_flRadius ), 0, SPROP_NOSCALE ),
 	SendPropBool( SENDINFO( m_bHeld ) ),
 	SendPropBool( SENDINFO( m_bLaunched ) ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 //-----------------------------------------------------------------------------
 // Gets at the spawner
@@ -252,7 +252,7 @@ void CPropCombineBall::Precache( void )
 {
 	//NOTENOTE: We don't call into the base class because it chains multiple 
 	//			precaches we don't need to incur
-
+	PrecacheParticleSystem( "combineball_hl2mpru" );
 	PrecacheModel( PROP_COMBINE_BALL_MODEL );
 	PrecacheModel( PROP_COMBINE_BALL_SPRITE_TRAIL );
 
@@ -404,9 +404,21 @@ void CPropCombineBall::Spawn( void )
 		m_pGlowTrail->SetStartWidth( m_flRadius );
 		m_pGlowTrail->SetEndWidth( 0 );
 		m_pGlowTrail->SetLifeTime( 0.1f );
-		m_pGlowTrail->TurnOff();
+		m_pGlowTrail->TurnOn();
 	}
 
+	m_hSpitEffect = (CParticleSystem *)CreateEntityByName( "info_particle_system" );
+	if( m_hSpitEffect != NULL ) {
+		m_hSpitEffect->KeyValue( "start_active", "1" );
+		m_hSpitEffect->KeyValue( "effect_name", "combineball_hl2mpru" );
+		m_hSpitEffect->SetParent( this );
+		m_hSpitEffect->SetLocalOrigin( vec3_origin );
+		DispatchSpawn( m_hSpitEffect );
+		if ( gpGlobals->curtime > 0.5f )
+			m_hSpitEffect->Activate();
+	}
+
+	m_nRenderFX = kRenderFxHologram;
 	m_bEmit = true;
 	m_bHeld = false;
 	m_bLaunched = false;
@@ -585,11 +597,11 @@ void CPropCombineBall::InputSocketed( inputdata_t &inputdata )
 	}
 
 	// if our owner is a player, tell them we were socketed
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( pOwner );
+	/*CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( pOwner );
 	if ( pPlayer )
 	{
 		pPlayer->CombineBallSocketed( this );
-	}
+	}*/
 
 	UTIL_Remove( this );
 
@@ -1115,7 +1127,7 @@ void CPropCombineBall::DoExplosion( )
 
 	
 	//if( !m_bStruckEntity && hl2_episodic.GetBool() && GetOwnerEntity() != NULL )
-	if( !m_bStruckEntity && GetOwnerEntity() != NULL )
+	/*if( !m_bStruckEntity && GetOwnerEntity() != NULL )
 	{
 		// Notify the player proxy that this combine ball missed so that it can fire an output.
 		CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( GetOwnerEntity() );
@@ -1123,7 +1135,7 @@ void CPropCombineBall::DoExplosion( )
 		{
 			pPlayer->MissedAR2AltFire();
 		}
-	}
+	}*/
 
 	SetContextThink( &CPropCombineBall::SUB_Remove, gpGlobals->curtime + 0.5f, s_pRemoveContext );
 	StopLoopingSounds();
@@ -1232,8 +1244,8 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 				{
 					EmitSound( "NPC_CombineBall.KillImpact" );
 
-					//if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL && hl2_episodic.GetBool() == true )
-					if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL )
+					if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL && hl2_episodic.GetBool() == true )
+					//if ( pHitEntity->IsNPC() && pHitEntity->Classify() != CLASS_PLAYER_ALLY_VITAL )
 					{
 						if ( pHitEntity->Classify() != CLASS_PLAYER_ALLY || ( pHitEntity->Classify() == CLASS_PLAYER_ALLY && m_bStruckEntity == false ) )
 						{
@@ -2065,6 +2077,9 @@ void CFuncCombineBallSpawner::BallThink()
 			m_BallRespawnTime.FastRemove( i );
 		}
 	}
+	CBasePlayer *pPlayer = UTIL_GetNearestVisiblePlayer( this, MASK_SHOT );
+	if( pPlayer )
+		m_OnBallGrabbed.FireOutput( pPlayer, this );
 
 	// There are no more to respawn
 	SetNextThink( gpGlobals->curtime + 0.1f );

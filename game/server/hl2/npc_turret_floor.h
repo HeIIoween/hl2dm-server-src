@@ -174,6 +174,7 @@ public:
 	{
 		// For now, turn green so we can tell who is hacked.
 		//SetRenderColor( 0, 255, 0 );
+		AddSpawnFlags( SF_FLOOR_TURRET_CITIZEN );
 		m_bHackedByAlyx = true; 
 	}
 

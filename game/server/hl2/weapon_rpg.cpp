@@ -32,9 +32,7 @@
 	#include "portal_util_shared.h"
 #endif
 
-#ifdef HL2_DLL
-	extern int g_interactionPlayerLaunchedRPG;
-#endif
+extern int g_interactionPlayerLaunchedRPG;
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1386,8 +1384,8 @@ BEGIN_DATADESC( CWeaponRPG )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponRPG, DT_WeaponRPG)
-END_SEND_TABLE()
+/*IMPLEMENT_SERVERCLASS_ST(CWeaponRPG, DT_WeaponRPG)
+END_SEND_TABLE()*/
 
 LINK_ENTITY_TO_CLASS( weapon_rpg, CWeaponRPG );
 PRECACHE_WEAPON_REGISTER(weapon_rpg);

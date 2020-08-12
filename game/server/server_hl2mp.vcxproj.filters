@@ -19,6 +19,12 @@
     <Filter Include="Source Files\HL2 DLL\unused">
       <UniqueIdentifier>{A52C827A-EB95-73A5-F031-C0395B5E2677}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HL2MP">
+      <UniqueIdentifier>{2BA678C8-595F-A004-FD96-60E33CA8DE83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HL2MP\Weapons">
+      <UniqueIdentifier>{382A0C79-1859-D554-1EB7-DCBE8F115956}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Navigation Mesh">
       <UniqueIdentifier>{B09D60FE-50B0-FE99-73C2-303E809808E2}</UniqueIdentifier>
     </Filter>
@@ -33,19 +39,6 @@
     </Filter>
     <Filter Include="VPC Scripts">
       <UniqueIdentifier>{A40EE377-781A-C6B9-0C7C-B3BE118D248E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HL2MP.RU">
-      <UniqueIdentifier>{4272452b-752e-413f-91b3-2e7426d6860b}</UniqueIdentifier>
-      <ParseFiles>true</ParseFiles>
-    </Filter>
-    <Filter Include="Source Files\HL1">
-      <UniqueIdentifier>{16b8cf32-b4ee-4e52-a6c2-9c3e1b6d1593}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HL2MP">
-      <UniqueIdentifier>{2BA678C8-595F-A004-FD96-60E33CA8DE83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HL2MP\Weapons">
-      <UniqueIdentifier>{382A0C79-1859-D554-1EB7-DCBE8F115956}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1833,69 +1826,6 @@
     <ClInclude Include="toolframework_server.h">
       <Filter>Tools Framework</Filter>
     </ClInclude>
-    <ClInclude Include="hl2mp.ru\hl2mp_player_fix.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\charge_token.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\info_player_spawn.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\npc_mortarsynth.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\grenade_energy.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_ai_basenpc.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_bullsquid.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_gargantua.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_hgrunt.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_hornet.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_houndeye.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_ichthyosaur.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\npc_antliongrub.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\npc_hunter.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\vehicle_jeep_episodic.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\weapon_striderbuster.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2\vehicle_jeep.h">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2\grenade_spit.h">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
-    <ClInclude Include="hl1\hl1_npc_snark.h">
-      <Filter>Source Files\HL1</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2\weapon_cubemap.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
-    <ClInclude Include="hl2mp.ru\weapon_hl2mp_gauss.h">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamedll_replay.cpp">
@@ -3221,6 +3151,9 @@
     <ClCompile Include="hl2\npc_headcrab.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\npc_ichthyosaur.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\npc_kleiner.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3333,6 +3266,9 @@
       <Filter>Source Files\HL2 DLL\unused</Filter>
     </ClCompile>
     <ClCompile Include="hl2\weapon_cguard.cpp">
+      <Filter>Source Files\HL2 DLL\unused</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\weapon_flaregun.cpp">
       <Filter>Source Files\HL2 DLL\unused</Filter>
     </ClCompile>
     <ClCompile Include="hl2mp\hl2mp_bot_temp.cpp">
@@ -3619,135 +3555,6 @@
     </ClCompile>
     <ClCompile Include="toolframework_server.cpp">
       <Filter>Tools Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\hl2mp_player_fix.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\charge_token.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\game_countdown_timer.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\info_npc_random.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\info_player_hl2mpru.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\info_player_spawn.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\info_spawn_manager.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\info_vehicle_spawn.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_merchant.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_mortarsynth.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_portal_turret_floor.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\weapon_scripted.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\grenade_energy.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_ai_basenpc.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_agrunt.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_bigmomma.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_bullsquid.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_controller.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_gargantua.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_hassassin.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_hgrunt.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_hornet.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_houndeye.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_ichthyosaur.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_antliongrub.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_fastzombie.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_hunter.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\npc_zombine.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\vehicle_jeep_episodic.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\weapon_striderbuster.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2\vehicle_jeep.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2\grenade_spit.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1_npc_snark.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\trigger_player_count.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="episodic\npc_combine_cannon.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl1\hl1mp_weapon_hornetgun.cpp">
-      <Filter>Source Files\HL1</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2\weapon_flaregun.cpp">
-      <Filter>Source Files\HL2 DLL\unused</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2\weapon_alyxgun.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\weapon_hl2mp_flaregun.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\weapon_hl2mp_gauss.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2\weapon_sniperrifle.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\point_trigger.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
-    </ClCompile>
-    <ClCompile Include="hl2mp.ru\point_teleport.cpp">
-      <Filter>Source Files\HL2MP.RU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

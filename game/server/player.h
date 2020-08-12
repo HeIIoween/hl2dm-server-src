@@ -18,6 +18,8 @@
 #include "hintsystem.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "util_shared.h"
+#include "hl_movedata.h"
+#include "weapon_physcannon.h"
 
 #if defined USES_ECON_ITEMS
 #include "game_item_schema.h"
@@ -98,6 +100,9 @@ struct surfacedata_t;
 // !!!set this bit on guns and stuff that should never respawn.
 #define	SF_NORESPAWN	( 1 << 30 )
 
+// Time between checks to determine whether NPCs are illuminated by the flashlight
+#define FLASHLIGHT_NPC_CHECK_INTERVAL	0.4
+
 //
 // Player PHYSICS FLAGS bits
 //
@@ -109,7 +114,7 @@ enum PlayerPhysFlag_e
 	PFLAG_OBSERVER		= ( 1<<3 ),		// player is locked in stationary cam mode. Spectators can move, observers can't.
 	PFLAG_VPHYSICS_MOTIONCONTROLLER = ( 1<<4 ),	// player is physically attached to a motion controller
 	PFLAG_GAMEPHYSICS_ROTPUSH = (1<<5), // game physics did a rotating push that we may want to override with vphysics
-
+	PFLAG_ONBARNACLE	= ( 1<<6 )
 	// If you add another flag here check that you aren't 
 	// overwriting phys flags in the HL2 of TF2 player classes
 };
@@ -248,6 +253,10 @@ public:
 	
 	CBasePlayer();
 	~CBasePlayer();
+
+	EHANDLE m_hLadder;
+	LadderMove_t m_LadderMove;
+	LadderMove_t		*GetLadderMove() { return &m_LadderMove; }
 
 	// IPlayerInfo passthrough (because we can't do multiple inheritance)
 	IPlayerInfo *GetPlayerInfo() { return &m_PlayerInfo; }
@@ -1223,14 +1232,17 @@ private:
 
 public:
 	virtual unsigned int PlayerSolidMask( bool brushOnly = false ) const;	// returns the solid mask for the given player, so bots can have a more-restrictive set
-
+	virtual	bool		IsHoldingEntity( CBaseEntity *pEnt );
 };
 
 typedef CHandle<CBasePlayer> CBasePlayerHandle;
 
 EXTERN_SEND_TABLE(DT_BasePlayer)
 
-
+inline bool CBasePlayer::IsHoldingEntity( CBaseEntity *pEnt )
+{
+	return PlayerPickupControllerIsHoldingEntity( m_hUseEntity, pEnt );
+}
 
 //-----------------------------------------------------------------------------
 // Inline methods

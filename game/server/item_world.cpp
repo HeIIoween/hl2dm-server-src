@@ -212,7 +212,7 @@ void CItem::Spawn( void )
 
 unsigned int CItem::PhysicsSolidMaskForEntity( void ) const
 { 
-	return BaseClass::PhysicsSolidMaskForEntity() | CONTENTS_PLAYERCLIP;
+	return BaseClass::PhysicsSolidMaskForEntity();
 }
 
 void CItem::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
@@ -302,6 +302,11 @@ void CItem::FallThink ( void )
 	{
 		SetThink ( NULL );
 		HL2MPRules()->AddLevelDesignerPlacedObject( this );
+		if ( GetOriginalSpawnOrigin() == vec3_origin )
+		{
+			m_vOriginalSpawnOrigin = GetAbsOrigin();
+			m_vOriginalSpawnAngles = GetAbsAngles();
+		}
 	}
 	SetThink( &CItem::ComeToRest );
 #endif // HL2MP
@@ -472,7 +477,7 @@ CBaseEntity* CItem::Respawn( void )
 	SetAbsAngles( g_pGameRules->VecItemRespawnAngles( this ) );// set the angles.
 
 #if !defined( TF_DLL )
-	UTIL_DropToFloor( this, MASK_SOLID );
+	//UTIL_DropToFloor( this, MASK_SOLID );
 #endif
 
 	RemoveAllDecals(); //remove any decals

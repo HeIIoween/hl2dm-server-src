@@ -55,23 +55,23 @@ void iph::TimerThink( void )
 {
 	CBasePlayer *pPlayer = GetNearestVisiblePlayer();
 	if( pPlayer && pPlayer->IsAlive() && !m_iDisabled ) {
-		CSpawnPoint *pSpot = dynamic_cast<CSpawnPoint *>( CreateEntityByName("info_player_coop") );
+		CHLSpawnPoint *pSpot = dynamic_cast<CHLSpawnPoint *>( CreateEntityByName("info_player_coop") );
 		if( pSpot ) {
 			pSpot->SetAbsOrigin( GetAbsOrigin() );
 			pSpot->SetAbsAngles( GetAbsAngles() );
 			pSpot->m_iDisabled = false;
 			pSpot->Activate();
+			DispatchSpawn( pSpot );
 			DisablePoint( pSpot );
 			if( m_bTpAll ) {
 				TpAllPlayer( GetAbsOrigin(), GetAbsAngles(), pPlayer );
-				engine->ServerCommand( "sm_savetp_clearpoint\n");
 			}
 			if( GetParent() )
 				pSpot->SetParent( GetParent() );
 			else {
 				trace_t tr;
 				UTIL_TraceLine(GetAbsOrigin(), GetAbsOrigin() - Vector( 0, 0, 10.0 ), MASK_ALL, pPlayer, COLLISION_GROUP_NONE, &tr);
-				if( tr.fraction != 1.0 && tr.m_pEnt ) {
+				if( tr.fraction != 1.0 && tr.m_pEnt && !tr.m_pEnt->IsPlayer() ) {
 					if( tr.m_pEnt->GetParent() )
 						pSpot->SetParent( tr.m_pEnt->GetParent() );
 					else
@@ -108,9 +108,11 @@ void iph::TpAllPlayer( const Vector newPosition, const QAngle newAngles, CBasePl
 	{
 		CBasePlayer *pPlayer = UTIL_PlayerByIndex(i);
 		if( pPlayer && (ignore != pPlayer) && pPlayer->IsConnected() && pPlayer->IsAlive() && !pPlayer->IsInAVehicle() ) {
-			pPlayer->Teleport( &newPosition, &newAngles, NULL );
+			pPlayer->SetAbsOrigin( newPosition );
+			pPlayer->SetAbsAngles( newAngles );
 		}
 	}
+	engine->ServerCommand( "sm_savetp_clearpoint\n");
 }
 
 const char *gpPointList[] = {
@@ -130,7 +132,7 @@ void iph::DisablePoint( CBaseEntity *pIgnore )
 		CBaseEntity *pSpawn = NULL;
 		while ( ( pSpawn = gEntList.FindEntityByClassname( pSpawn, gpPointList[i] ) ) != NULL )
 		{
-			CSpawnPoint *pSpot = dynamic_cast<CSpawnPoint *>( pSpawn );
+			CHLSpawnPoint *pSpot = dynamic_cast<CHLSpawnPoint *>( pSpawn );
 			if( pSpot && ( pSpot != pIgnore ) ) {
 				UTIL_Remove( pSpot );
 			}

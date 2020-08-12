@@ -949,17 +949,21 @@ bool CHL2MP_Player::BumpWeapon( CBaseCombatWeapon *pWeapon )
 	if ( bOwnsWeaponAlready == true ) 
 	{
 		//If we have room for the ammo, then "take" the weapon too.
-		 if ( Weapon_EquipAmmoOnly( pWeapon ) )
-		 {
-			 pWeapon->CheckRespawn();
-
-			 UTIL_Remove( pWeapon );
-			 return true;
-		 }
-		 else
-		 {
-			 return false;
-		 }
+		if ( Weapon_EquipAmmoOnly( pWeapon ) )
+		{
+			int	primary = (pWeapon->UsesClipsForAmmo1()) ? pWeapon->m_iClip1 : pWeapon->GetPrimaryAmmoCount();
+			int secondary = (pWeapon->UsesClipsForAmmo2()) ? pWeapon->m_iClip2 : pWeapon->GetSecondaryAmmoCount();
+			
+			if( weaponstay.GetInt() == 0 || FClassnameIs( pWeapon, "weapon_frag") || FClassnameIs( pWeapon, "weapon_slam") || secondary <= 0 && primary <= 0 ) {
+				pWeapon->CheckRespawn();
+				UTIL_Remove( pWeapon );
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	pWeapon->CheckRespawn();
@@ -1045,7 +1049,7 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 			CommitSuicide();
 
 			// add 1 to frags to balance out the 1 subtracted for killing yourself
-			IncrementFragCount( 1 );
+			//IncrementFragCount( 1 );
 		}
 
 		ChangeTeam( TEAM_SPECTATOR );

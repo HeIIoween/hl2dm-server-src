@@ -3561,7 +3561,7 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 				if ( distance < pTask->flTaskData )
 				{
 					TaskComplete();
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	// HL2 uses TASK_STOP_MOVING
 					GetNavigator()->StopMoving();		// Stop moving
 #endif

@@ -1,9 +1,9 @@
 #include "cbase.h"
 
-class CSpawnPoint : public CPointEntity
+class CHLSpawnPoint : public CPointEntity
 {
 public:
-	DECLARE_CLASS(CSpawnPoint, CPointEntity);
+	DECLARE_CLASS(CHLSpawnPoint, CPointEntity);
 	DECLARE_DATADESC();
 
 	int	m_iDisabled;

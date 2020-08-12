@@ -177,7 +177,7 @@ public:
 	CWeaponRPG();
 	~CWeaponRPG();
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 	void	Precache( void );
 

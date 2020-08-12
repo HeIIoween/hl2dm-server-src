@@ -42,7 +42,7 @@ public:
 
 	CWeaponPistol(void);
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 	void	Precache( void );
 	void	ItemPostFrame( void );
@@ -114,8 +114,8 @@ private:
 };
 
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponPistol, DT_WeaponPistol)
-END_SEND_TABLE()
+/*IMPLEMENT_SERVERCLASS_ST(CWeaponPistol, DT_WeaponPistol)
+END_SEND_TABLE()*/
 
 LINK_ENTITY_TO_CLASS( weapon_pistol, CWeaponPistol );
 PRECACHE_WEAPON_REGISTER( weapon_pistol );

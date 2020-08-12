@@ -12,12 +12,13 @@ LINK_ENTITY_TO_CLASS( weapon_scripted, WeaponScripted );
 
 static const char *RandomWeapon[] = 
 {
-	"weapon_ar2",
-	"weapon_smg1",
-	"weapon_pistol",
-	"weapon_357",
-	"weapon_shotgun",
-	"weapon_crossbow",
+	"weapon_ak47",
+	"weapon_m4a1",
+	"weapon_m5navy",
+	"weapon_mac10",
+	"weapon_xm1014",
+	"weapon_scout",
+	"weapon_m3",
 };
 
 void WeaponScripted::Spawn( void )

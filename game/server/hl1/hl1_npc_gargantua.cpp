@@ -1089,7 +1089,7 @@ int CNPC_Gargantua::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			 flDamage *= 0.01;
 			 subInfo.SetDamage( flDamage );
 		}
-		if ( subInfo.GetDamageType() & DMG_BLAST )
+		//if ( subInfo.GetDamageType() & DMG_BLAST )
 		{
 			SetCondition( COND_LIGHT_DAMAGE );
 			return BaseClass::OnTakeDamage_Alive( subInfo );

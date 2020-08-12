@@ -199,9 +199,7 @@ CBaseEntity* CBaseCombatWeapon::Respawn( void )
 {
 	// make a copy of this weapon that is invisible and inaccessible to players (no touch function). The weapon spawn/respawn code
 	// will decide when to make the weapon visible and touchable.
-	
-	//CBaseEntity *pNewWeapon = CBaseEntity::Create( GetClassname(), g_pGameRules->VecWeaponRespawnSpot( this ), GetLocalAngles(), GetOwnerEntity() );
-	CBaseEntity *pNewWeapon = CBaseEntity::Create( GetClassname(), m_vOriginalSpawnOrigin, m_vOriginalSpawnAngles, GetOwnerEntity() );
+	CBaseEntity *pNewWeapon = CBaseEntity::Create( GetClassname(), g_pGameRules->VecWeaponRespawnSpot( this ), GetLocalAngles(), GetOwnerEntity() );
 
 	if ( pNewWeapon )
 	{
@@ -483,49 +481,39 @@ void CBaseCombatWeapon::FallInit( void )
 	SetModel( GetWorldModel() );
 	VPhysicsDestroyObject();
 
-	if ( HasSpawnFlags( SF_NORESPAWN ) == false )
+	if ( !VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false ) )
 	{
-		SetMoveType( MOVETYPE_NONE );
+		SetMoveType( MOVETYPE_FLYGRAVITY );
 		SetSolid( SOLID_BBOX );
 		AddSolidFlags( FSOLID_TRIGGER );
-
-		UTIL_DropToFloor( this, MASK_SOLID );
 	}
 	else
 	{
-		if ( !VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false ) )
+#if !defined( CLIENT_DLL )
+		// Constrained start?
+		if ( HasSpawnFlags( SF_WEAPON_START_CONSTRAINED ) )
 		{
-			SetMoveType( MOVETYPE_NONE );
-			SetSolid( SOLID_BBOX );
-			AddSolidFlags( FSOLID_TRIGGER );
-		}
-		else {
-	#if !defined( CLIENT_DLL )
-			// Constrained start?
-			if ( HasSpawnFlags( SF_WEAPON_START_CONSTRAINED ) )
-			{
-				//Constrain the weapon in place
-				IPhysicsObject *pReferenceObject, *pAttachedObject;
+			//Constrain the weapon in place
+			IPhysicsObject *pReferenceObject, *pAttachedObject;
 			
-				pReferenceObject = g_PhysWorldObject;
-				pAttachedObject = VPhysicsGetObject();
+			pReferenceObject = g_PhysWorldObject;
+			pAttachedObject = VPhysicsGetObject();
 
-				if ( pReferenceObject && pAttachedObject )
-				{
-					constraint_fixedparams_t fixed;
-					fixed.Defaults();
-					fixed.InitWithCurrentObjectState( pReferenceObject, pAttachedObject );
+			if ( pReferenceObject && pAttachedObject )
+			{
+				constraint_fixedparams_t fixed;
+				fixed.Defaults();
+				fixed.InitWithCurrentObjectState( pReferenceObject, pAttachedObject );
 				
-					fixed.constraint.forceLimit	= lbs2kg( 10000 );
-					fixed.constraint.torqueLimit = lbs2kg( 10000 );
+				fixed.constraint.forceLimit	= lbs2kg( 10000 );
+				fixed.constraint.torqueLimit = lbs2kg( 10000 );
 
-					m_pConstraint = physenv->CreateFixedConstraint( pReferenceObject, pAttachedObject, NULL, fixed );
+				m_pConstraint = physenv->CreateFixedConstraint( pReferenceObject, pAttachedObject, NULL, fixed );
 
-					m_pConstraint->SetGameData( (void *) this );
-				}
+				m_pConstraint->SetGameData( (void *) this );
 			}
-	#endif //CLIENT_DLL
 		}
+#endif //CLIENT_DLL
 	}	
 
 	SetPickupTouch();
@@ -545,7 +533,7 @@ void CBaseCombatWeapon::FallThink ( void )
 {
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
-	/*bool shouldMaterialize = false;
+	bool shouldMaterialize = false;
 	IPhysicsObject *pPhysics = VPhysicsGetObject();
 	if ( pPhysics )
 	{
@@ -557,7 +545,7 @@ void CBaseCombatWeapon::FallThink ( void )
 	}
 
 	if ( shouldMaterialize )
-	{*/
+	{
 		// clatter if we have an owner (i.e., dropped by someone)
 		// don't clatter if the gun is waiting to respawn (if it's waiting, it is invisible!)
 		if ( GetOwnerEntity() )
@@ -565,7 +553,7 @@ void CBaseCombatWeapon::FallThink ( void )
 			EmitSound( "BaseCombatWeapon.WeaponDrop" );
 		}
 		Materialize(); 
-	//}
+	}
 }
 
 //====================================================================================
@@ -595,10 +583,6 @@ void CBaseCombatWeapon::Materialize( void )
 		SetMoveType( MOVETYPE_VPHYSICS );
 
 		HL2MPRules()->AddLevelDesignerPlacedObject( this );
-		if ( m_vOriginalSpawnOrigin == vec3_origin )
-		{
-			m_vOriginalSpawnOrigin = GetAbsOrigin();
-		}
 	}
 #else
 	SetSolid( SOLID_BBOX );

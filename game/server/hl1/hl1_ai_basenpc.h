@@ -36,7 +36,7 @@ public:
 		
 	}
 
-	void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
+	void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator = NULL );
 	bool	ShouldGib( const CTakeDamageInfo &info );
 	bool	CorpseGib( const CTakeDamageInfo &info );
 

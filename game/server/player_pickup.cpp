@@ -66,28 +66,24 @@ void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer,
 
 bool Pickup_OnAttemptPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer, PhysGunPickup_t reason )
 {
-	if( pPickedUpObject && pPickedUpObject->GetPlayerMP() && pPickedUpObject->GetPlayerMP() != pPlayer )
+	if( !IsAdmin( pPlayer ) && pPickedUpObject->GetPlayerMP() && pPickedUpObject->GetPlayerMP() != pPlayer )
 		return false;
 
-	if( pPickedUpObject && FClassnameIs(pPickedUpObject,"prop_combine_ball") ) {
+	if( !IsAdmin( pPlayer ) && FClassnameIs(pPickedUpObject,"prop_combine_ball") ) {
 		CBaseEntity *pOwner = pPickedUpObject->GetOwnerEntity();
 		if( pOwner != NULL )
 			return false;
 	}
 
-	if( pPickedUpObject && pPickedUpObject->IsNPC() ) {
+	if( !IsAdmin( pPlayer ) && pPickedUpObject->IsNPC() ) {
 		CAI_BaseNPC *pNpc =  dynamic_cast< CAI_BaseNPC * >(pPickedUpObject);
 		if(  pNpc && pNpc->IRelationType(pPlayer) == D_HT )
 				return false;
 	}
 
 	CPropVehicleDriveable *veh = dynamic_cast< CPropVehicleDriveable * >(pPickedUpObject);
-	if( veh ) {
-		if( veh->GetDriver() && veh->GetDriver()->IsNPC() ||  veh->GetLocked() )
-			return false;
-
-		CBasePlayer *driver = ToHL2MPPlayer( veh->GetDriver() );
-		if( driver && driver->GetVehicleEntity() == veh )
+	if( !IsAdmin( pPlayer ) && veh ) {
+		if( veh->GetDriver() ||  veh->GetLocked() )
 			return false;
 
 		if( veh->GetOwnerEntity() && pPickedUpObject->GetPlayerMP() != pPlayer )
@@ -149,7 +145,7 @@ AngularImpulse Pickup_PhysGunLaunchAngularImpulse( CBaseEntity *pObject, PhysGun
 
 Vector Pickup_DefaultPhysGunLaunchVelocity( const Vector &vecForward, float flMass )
 {
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 	// Calculate the velocity based on physcannon rules
 	float flForceMax = physcannon_maxforce.GetFloat();
 	float flForce = flForceMax;

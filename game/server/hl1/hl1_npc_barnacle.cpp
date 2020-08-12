@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose:		barnacle - stationary ceiling mounted 'fishing' monster	
 //
@@ -9,11 +9,11 @@
 
 #include "cbase.h"
 #include "hl1_npc_barnacle.h"
-#include "NPCEvent.h"
+#include "npcevent.h"
 #include "gib.h"
-#include "AI_Default.h"
+#include "ai_default.h"
 #include "activitylist.h"
-#include "hl2_player.h"
+//#include "cs_player.h"
 #include "vstdlib/random.h"
 #include "physics_saverestore.h"
 #include "vcollide_parse.h"
@@ -33,8 +33,8 @@ int	g_interactionBarnacleVictimDangle	= 0;
 int	g_interactionBarnacleVictimReleased	= 0;
 int	g_interactionBarnacleVictimGrab		= 0;
 
-LINK_ENTITY_TO_CLASS( monster_barnacle, CNPC_Barnacle );
-IMPLEMENT_CUSTOM_AI( monster_barnacle, CNPC_Barnacle );
+LINK_ENTITY_TO_CLASS( npc_barnacle, CNPC_Barnacle );
+IMPLEMENT_CUSTOM_AI( npc_barnacle, CNPC_Barnacle );
 
 //-----------------------------------------------------------------------------
 // Purpose: Initialize the custom schedules
@@ -74,7 +74,7 @@ END_DATADESC()
 //=========================================================
 Class_T	CNPC_Barnacle::Classify ( void )
 {
-	return	CLASS_ALIEN_MONSTER;
+	return	CLASS_BARNACLE;
 }
 
 //=========================================================
@@ -350,7 +350,7 @@ void CNPC_Barnacle::BarnacleThink ( void )
 				CPASAttenuationFilter filter( this );
 				EmitSound( filter, entindex(), "Barnacle.Alert" );
 
-				SetSequenceByName ( "attack1" );
+				SetSequenceByName ( "attack_player" );
 
 				SetEnemy( pTouchEnt );
 
@@ -490,7 +490,7 @@ CBaseEntity *CNPC_Barnacle::TongueTouchEnt ( float *pflLength )
 	
 	// Take our current tongue's length or a point higher if we hit a wall 
 	// NOTENOTE: (this relieves the need to know if the tongue is currently moving)
-	mins.z -= min( m_flAltitude, length );
+	mins.z -= MIN( m_flAltitude, length );
 
 	CBaseEntity *pList[10];
 	int count = UTIL_EntitiesInBox( pList, 10, mins, maxs, (FL_CLIENT|FL_NPC) );

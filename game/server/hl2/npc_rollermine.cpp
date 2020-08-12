@@ -174,7 +174,7 @@ enum rollingsoundstate_t { ROLL_SOUND_NOT_READY = 0, ROLL_SOUND_OFF, ROLL_SOUND_
 class CNPC_RollerMine : public CNPCBaseInteractive<CAI_BaseNPC>, public CDefaultPlayerPickupVPhysics
 {
 	DECLARE_CLASS( CNPC_RollerMine, CNPCBaseInteractive<CAI_BaseNPC> );
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 public:
 
@@ -422,12 +422,12 @@ BEGIN_DATADESC( CNPC_RollerMine )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CNPC_RollerMine, DT_RollerMine )
+/*IMPLEMENT_SERVERCLASS_ST( CNPC_RollerMine, DT_RollerMine )
 	SendPropInt(SENDINFO(m_bIsOpen), 1, SPROP_UNSIGNED ),
 	SendPropFloat(SENDINFO(m_flActiveTime), 0, SPROP_NOSCALE ),
 	SendPropInt(SENDINFO(m_bHackedByAlyx), 1, SPROP_UNSIGNED ),
 	SendPropInt(SENDINFO(m_bPowerDown), 1, SPROP_UNSIGNED ),
-END_SEND_TABLE()
+END_SEND_TABLE()*/
 
 bool NPC_Rollermine_IsRollermine( CBaseEntity *pEntity )
 {
@@ -558,7 +558,7 @@ void CNPC_RollerMine::Spawn( void )
 	m_flForwardSpeed	= -1200;
 	m_bloodColor		= DONT_BLEED;
 
-	SetHullType(HULL_SMALL_CENTERED);
+	SetHullType(HULL_TINY);
 
 	SetHullSizeNormal();
 
@@ -2446,7 +2446,7 @@ int CNPC_RollerMine::OnTakeDamage( const CTakeDamageInfo &info )
 			int retVal = OnTakeDamage_Alive( info );
 			if ( m_iHealth <= 0 )
 			{
-				if( m_bHeld ) {
+				if( m_bHeld && GetPlayerMP() ) {
 					GetPlayerMP()->ForceDropOfCarriedPhysObjects();
 				}
 				m_takedamage = DAMAGE_NO;
@@ -2475,9 +2475,6 @@ int CNPC_RollerMine::OnTakeDamage( const CTakeDamageInfo &info )
 	{
 		if ( info.GetAttacker() && info.GetAttacker()->m_iClassname != m_iClassname )
 		{
-			if( GetPlayerMP() && (info.GetAttacker()->IsPlayer() || info.GetAttacker()->GetPlayerMP()) )
-				return 0;
-
 			SetThink( &CNPC_RollerMine::PreDetonate );
 			SetNextThink( gpGlobals->curtime + random->RandomFloat( 0.1f, 0.5f ) );
 		}

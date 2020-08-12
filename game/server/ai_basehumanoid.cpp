@@ -13,7 +13,7 @@
 #include "ai_navigator.h"
 #include "ai_memory.h"
 
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 #include "ai_interactions.h"
 #endif
 
@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 bool CAI_BaseHumanoid::HandleInteraction(int interactionType, void *data, CBaseCombatCharacter* sourceEnt)
 {
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 	// Annoying to ifdef this out. Copy it into all the HL2 specific humanoid NPC's instead?
 	if ( interactionType == g_interactionBarnacleVictimDangle )
 	{

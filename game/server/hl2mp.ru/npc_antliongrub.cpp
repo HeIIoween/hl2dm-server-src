@@ -14,7 +14,7 @@
 #include "particle_parse.h"
 #include "items.h"
 #include "item_dynamic_resupply.h"
-#include "npc_vortigaunt_episodic.h"
+//#include "npc_vortigaunt_episodic.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -769,11 +769,11 @@ void CAntlionGrub::Squash( CBaseEntity *pOther, bool bDealDamage, bool bSpawnBlo
 	EmitSound( "NPC_Antlion_Grub.Squish" );
 
 	// if vort stepped on me, maybe he wants to say something
-	if ( pOther && FClassnameIs( pOther, "npc_vortigaunt" ) )
+	/*if ( pOther && FClassnameIs( pOther, "npc_vortigaunt" ) )
 	{
 		Assert(dynamic_cast<CNPC_Vortigaunt *>(pOther));
 		static_cast<CNPC_Vortigaunt *>(pOther)->OnSquishedGrub(this);
-	}
+	}*/
 
 	SetTouch( NULL );
 

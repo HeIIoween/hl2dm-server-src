@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-#ifdef HL2_DLL
+#ifndef HL2_DLL
 // Needed for launch velocity
 extern ConVar physcannon_minforce;
 extern ConVar physcannon_maxforce;

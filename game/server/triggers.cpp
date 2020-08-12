@@ -2228,6 +2228,10 @@ void CTriggerPush::Spawn()
 //-----------------------------------------------------------------------------
 void CTriggerPush::Activate()
 {
+	float gravity = sv_gravity.GetFloat();
+	if( m_flSpeed < gravity ) {
+		m_flSpeed += gravity - 600;
+	}
 	// Fix problems with triggers pushing too hard under sv_alternateticks.
 	// This is somewhat hacky, but it's simple and we're really close to shipping.
 	ConVarRef sv_alternateticks( "sv_alternateticks" );

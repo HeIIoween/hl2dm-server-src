@@ -15,7 +15,7 @@ class CTEAntlionDust : public CTEParticleSystem
 public:
 	
 	DECLARE_CLASS( CTEAntlionDust, CTEParticleSystem );
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 					CTEAntlionDust( const char *name );
 	virtual			~CTEAntlionDust( void );

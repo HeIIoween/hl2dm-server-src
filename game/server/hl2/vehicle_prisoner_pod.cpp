@@ -15,7 +15,7 @@
 #include "vphysics/constraints.h"
 #include "vcollide_parse.h"
 #include "ndebugoverlay.h"
-#include "hl2_player.h"
+#include "player.h"
 #include "props.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -77,7 +77,7 @@ class CPropVehiclePrisonerPod : public CPhysicsProp, public IDrivableVehicle
 
 public:
 	DECLARE_DATADESC();
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 	CPropVehiclePrisonerPod( void )
 	{
@@ -213,12 +213,12 @@ BEGIN_DATADESC( CPropVehiclePrisonerPod )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST(CPropVehiclePrisonerPod, DT_PropVehiclePrisonerPod)
+/*IMPLEMENT_SERVERCLASS_ST(CPropVehiclePrisonerPod, DT_PropVehiclePrisonerPod)
 	SendPropEHandle(SENDINFO(m_hPlayer)),
 	SendPropBool(SENDINFO(m_bEnterAnimOn)),
 	SendPropBool(SENDINFO(m_bExitAnimOn)),
 	SendPropVector(SENDINFO(m_vecEyeExitEndpoint), -1, SPROP_COORD),
-END_SEND_TABLE();
+END_SEND_TABLE();*/
 
 
 //------------------------------------------------

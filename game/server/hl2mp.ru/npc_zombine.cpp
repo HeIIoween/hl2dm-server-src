@@ -26,8 +26,8 @@
 #include "IEffects.h"
 #include "props.h"
 #include "physics_npc_solver.h"
-#include "hl2_player.h"
-#include "hl2_gamerules.h"
+#include "player.h"
+#include "gamerules.h"
 
 #include "basecombatweapon.h"
 #include "basegrenade_shared.h"

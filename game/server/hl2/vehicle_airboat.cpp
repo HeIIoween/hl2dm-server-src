@@ -23,6 +23,7 @@
 #include "vphysics/constraints.h"
 #include "world.h"
 #include "rumble_shared.h"
+#include "hl2mp_player_fix.h"
 // NVNT for airboat weapon fire
 #include "haptics/haptic_utils.h"
 // memdbgon must be the last include file in a .cpp file!!!
@@ -78,7 +79,7 @@ class CPropAirboat : public CPropVehicleDriveable
 
 public:
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 	// CPropVehicle
@@ -266,13 +267,13 @@ private:
 
 };
 
-IMPLEMENT_SERVERCLASS_ST( CPropAirboat, DT_PropAirboat )
+/*IMPLEMENT_SERVERCLASS_ST( CPropAirboat, DT_PropAirboat )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
 	SendPropInt( SENDINFO( m_nAmmoCount ), 9 ),
 	SendPropInt( SENDINFO( m_nExactWaterLevel ) ),
 	SendPropInt( SENDINFO( m_nWaterLevel ) ),
 	SendPropVector( SENDINFO( m_vecPhysVelocity ) ),
-END_SEND_TABLE();
+END_SEND_TABLE();*/
 
 LINK_ENTITY_TO_CLASS( prop_vehicle_airboat, CPropAirboat );
 
@@ -886,7 +887,7 @@ int CPropAirboat::OnTakeDamage( const CTakeDamageInfo &info )
 	VPhysicsTakeDamage( physDmg );
 
 	// Check to do damage to driver
-	if ( m_hPlayer != NULL )
+	if ( GetDriver() != NULL )
 	{
 		// Don't pass along physics damage
 		if ( info.GetDamageType() & (DMG_CRUSH|DMG_RADIATION) )
@@ -1141,7 +1142,7 @@ void CPropAirboat::Think(void)
 		// The first few time we get into the jeep, print the jeep help
 		if ( m_iNumberOfEntries < hud_airboathint_numentries.GetInt() && !m_bExitAnimOn )
 		{
-			UTIL_HudHintText( m_hPlayer, "#Valve_Hint_BoatKeys" );
+			//UTIL_HudHintText( m_hPlayer, "#Valve_Hint_BoatKeys" );
 			m_iNumberOfEntries++;
 		}
 		
@@ -1175,6 +1176,12 @@ void CPropAirboat::Think(void)
 	if ( HasGun() && ( m_nGunState == GUN_STATE_IDLE ) )
 	{
 		RechargeAmmo();
+	}
+
+
+	if( GetDriver() && GetDriver()->IsPlayer() ) {
+		//CHL2_Player *pPlayer = ToHL2MPPlayer( m_hPlayer );
+		//pPlayer->m_HL2Local.m_flSuitPower = m_nAmmoCount / (sk_airboat_max_ammo.GetInt() / 100);
 	}
 
 	UpdateSound();
@@ -1647,7 +1654,7 @@ void CPropAirboat::FireGun( )
 
 	if ( gpGlobals->curtime >= m_flNextGunShakeTime )
 	{
-		UTIL_ScreenShakeObject( this, WorldSpaceCenter(), 0.2, 250.0, CANNON_SHAKE_INTERVAL, 250, SHAKE_START );
+		//UTIL_ScreenShakeObject( this, WorldSpaceCenter(), 0.2, 250.0, CANNON_SHAKE_INTERVAL, 250, SHAKE_START );
 		m_flNextGunShakeTime = gpGlobals->curtime + 0.5 * CANNON_SHAKE_INTERVAL; 
 	}
 

@@ -994,6 +994,11 @@ void CTemplateNPCMaker::MakeNPCInRadius( void )
 
 	m_OnSpawnNPC.Set( pEntity, pEntity, this );
 
+	if ( m_spawnflags & SF_NPCMAKER_FADE )
+	{
+		pent->AddSpawnFlags( SF_NPC_FADE_CORPSE );
+	}
+
 	pent->AddSpawnFlags( SF_NPC_FALL_TO_GROUND );
 
 	pent->RemoveSpawnFlags( SF_NPC_TEMPLATE );
