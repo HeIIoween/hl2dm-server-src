@@ -26,7 +26,6 @@ private:
 	QAngle m_vSaveAngles;
 	const char *szDistination;
 	float		m_flRadius;
-	bool m_bEnabled;
 	DECLARE_DATADESC();
 };
 
@@ -35,20 +34,18 @@ BEGIN_DATADESC( CPointNewTeleport )
 	DEFINE_KEYFIELD( m_flRadius, FIELD_FLOAT, "radius" ),
 	DEFINE_KEYFIELD( szDistination, FIELD_STRING, "TeleportDestination" ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "Teleport", InputTeleport ),
-	DEFINE_KEYFIELD( m_bEnabled, FIELD_INTEGER, "StartEnabled" ),
 	DEFINE_FUNCTION( RadiusThink ),
 
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( point_teleport, CPointNewTeleport );
 
-void CPointNewTeleport::Spawn( void )
+void CPointNewTeleport::Spawn(void)
 {
 	SetThink( NULL );
 	SetUse( NULL );
 	SetThink( &CPointNewTeleport::RadiusThink );
 	SetNextThink( gpGlobals->curtime + 0.1f );
-	m_bDisabled = !m_bEnabled;
 	BaseClass::Spawn();
 }
 

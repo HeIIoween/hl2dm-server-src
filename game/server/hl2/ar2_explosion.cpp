@@ -13,9 +13,9 @@
 #define AR2EXPLOSION_ENTITYNAME	"ar2explosion"
 
 
-/*IMPLEMENT_SERVERCLASS_ST(AR2Explosion, DT_AR2Explosion)
+IMPLEMENT_SERVERCLASS_ST(AR2Explosion, DT_AR2Explosion)
 	SendPropString( SENDINFO( m_szMaterialName ) ),
-END_SEND_TABLE()*/
+END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS(ar2explosion, AR2Explosion);
 

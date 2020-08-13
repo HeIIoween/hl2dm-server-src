@@ -23,6 +23,7 @@
 #include "soundent.h"
 #include "vstdlib/random.h"
 #include "beam_shared.h"
+#include "hl2_player.h"
 #include "npc_strider.h"
 #include "hl2mp_player_fix.h"
 #include "beam_shared.h"
@@ -67,19 +68,19 @@ public:
 	bool Reload( void );
 	void Zoom( void );
 	float GetFireRate( void ) { return 1; };
+	CHandle<CBeam> m_pBeam;
 	DECLARE_ACTTABLE();
 
-private:
+protected:
 	float m_fNextZoom;
 	int m_nZoomLevel;
-	
 };
 
 LINK_ENTITY_TO_CLASS( weapon_sniperrifle, CWeaponSniperRifle );
 PRECACHE_WEAPON_REGISTER(weapon_sniperrifle);
 
 BEGIN_DATADESC( CWeaponSniperRifle )
-	
+
 	DEFINE_FIELD( m_fNextZoom, FIELD_FLOAT ),
 	DEFINE_FIELD( m_nZoomLevel, FIELD_INTEGER ),
 
@@ -249,7 +250,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 		// Fire the bullets
 		FireBullets( SNIPER_BULLET_COUNT_PLAYER, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, GetAmmoDef()->Index( "SniperRound" ), 1, -1, -1, 0, pPlayer );
 
-		CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), 200, 0.2 );
+		CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), 600, 0.2 );
 
 		QAngle vecPunch(random->RandomFloat( -SNIPER_KICKBACK, SNIPER_KICKBACK ), 0, 0);
 		pPlayer->ViewPunch(vecPunch);

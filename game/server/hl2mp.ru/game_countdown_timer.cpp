@@ -107,7 +107,7 @@ void gct::TimerThink( void )
 	tTextParam.fadeoutTime	= 0.0;
 	tTextParam.holdTime		= 1.5;
 	tTextParam.fxTime		= 0.0;
-	tTextParam.channel		= 0;
+	tTextParam.channel		= 5;
 	UTIL_HudMessageAll( tTextParam, msg);
 
 	SetNextThink( gpGlobals->curtime + 1.0 );

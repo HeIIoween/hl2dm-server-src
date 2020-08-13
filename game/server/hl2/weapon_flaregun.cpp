@@ -72,13 +72,13 @@ BEGIN_DATADESC( CFlare )
 END_DATADESC()
 
 //Data-tables
-/*IMPLEMENT_SERVERCLASS_ST( CFlare, DT_Flare )
+IMPLEMENT_SERVERCLASS_ST( CFlare, DT_Flare )
 	SendPropFloat( SENDINFO( m_flTimeBurnOut ), 0,	SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO( m_flScale ), 0, SPROP_NOSCALE ),
 	SendPropInt( SENDINFO( m_bLight ), 1, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_bSmoke ), 1, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_bPropFlare ), 1, SPROP_UNSIGNED ),
-END_SEND_TABLE()*/
+END_SEND_TABLE()
 
 CFlare *CFlare::activeFlares = NULL;
 

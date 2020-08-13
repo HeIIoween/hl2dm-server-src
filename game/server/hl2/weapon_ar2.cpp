@@ -18,7 +18,7 @@
 #include "in_buttons.h"
 #include "ai_memory.h"
 #include "soundent.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "EntityFlame.h"
 #include "weapon_flaregun.h"
 #include "te_effect_dispatch.h"
@@ -46,8 +46,8 @@ BEGIN_DATADESC( CWeaponAR2 )
 
 END_DATADESC()
 
-/*IMPLEMENT_SERVERCLASS_ST(CWeaponAR2, DT_WeaponAR2)
-END_SEND_TABLE()*/
+IMPLEMENT_SERVERCLASS_ST(CWeaponAR2, DT_WeaponAR2)
+END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_ar2, CWeaponAR2 );
 PRECACHE_WEAPON_REGISTER(weapon_ar2);

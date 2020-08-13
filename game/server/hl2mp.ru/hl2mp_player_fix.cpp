@@ -10,16 +10,33 @@
 
 LINK_ENTITY_TO_CLASS(player, CHL2MP_Player_fix);
 
-ConVar sv_healthbar("sv_healthbar","1");
-ConVar sv_healthbar_sprite("sv_healthbar_sprite","sprites/health_arrow_format.vmt");
-ConVar sv_healthbar_z("sv_healthbar_z","10");
-ConVar sv_healthbar_frame("sv_healthbar_frame","101");
-
 void CHL2MP_Player_fix::Spawn(void)
 {
 	BaseClass::Spawn();
 	m_flNextChargeTime = 0.0f;
 	m_hHealerTarget = NULL;
+	CBaseEntity *ent = NULL;
+	while ((ent = gEntList.NextEnt(ent)) != NULL)
+	{
+		if (ent->GetPlayerMP() && ent->GetPlayerMP() == this && ent->GetOwnerEntity() && FClassnameIs(ent->GetOwnerEntity(), "info_vehicle_spawn")) {
+			CPropVehicleDriveable *vehicle = dynamic_cast< CPropVehicleDriveable * >(ent);
+			if (vehicle && vehicle->m_hPlayer) {
+				vehicle->m_hPlayer = NULL;
+				vehicle->SetPlayerMP( NULL );
+				UTIL_Remove(vehicle);
+			}
+		}
+	}
+
+	m_hHealSprite = CSprite::SpriteCreate( "materials/hl2mp.ru/medic.vmt", GetAbsOrigin() + Vector( 0, 0, 75 ), false );
+	if( m_hHealSprite ) {
+		m_hHealSprite->SetRenderMode( kRenderTransColor );
+		m_hHealSprite->SetScale( 0.3f );
+		m_hHealSprite->SetGlowProxySize( 4.0f );
+		m_hHealSprite->SetParent( this );
+		DispatchSpawn( m_hHealSprite );
+		m_hHealSprite->TurnOff();
+	}
 }
 
 void CHL2MP_Player_fix::DeathNotice ( CBaseEntity *pVictim ) 
@@ -28,32 +45,20 @@ void CHL2MP_Player_fix::DeathNotice ( CBaseEntity *pVictim )
 		ClientPrint( this, HUD_PRINTTALK, UTIL_VarArgs( "Your npc %s, is dead", nameReplace( pVictim ) ) );
 }
 
-CBaseEntity* CHL2MP_Player_fix::GetAimTarget ( void ) 
-{
-	Vector vecMuzzleDir;
-	AngleVectors(EyeAngles(), &vecMuzzleDir);
-	Vector vecStart, vecEnd;
-	VectorMA( EyePosition(), 3000, vecMuzzleDir, vecEnd );
-	VectorMA( EyePosition(), 10,   vecMuzzleDir, vecStart );
-	trace_t tr;
-	UTIL_TraceLine( vecStart, vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
-	return tr.m_pEnt;
-}
-
 ConVar sv_healer("sv_healer", "1");
-ConVar sv_healer_auto("sv_healer_auto", "0");
+ConVar sv_healer_auto("sv_healer_auto", "1");
 ConVar sv_healer_charge_interval("sv_healer_charge_interval", "1.0");
 ConVar sv_test_bot("sv_test_bot", "0");
 ConVar sv_npchp_x("sv_npchp_x","0.01");
 ConVar sv_npchp_y("sv_npchp_y","0.56");
 ConVar sv_npchp("sv_npchp","1");
-ConVar sv_npchp_holdtime("sv_npchp_holdtime","0.2");
 ConVar sv_player_pickup("sv_player_pickup", "0");
 
 ConVar sv_weaponmenu_url("sv_weaponmenu_url","http://127.0.0.1/motd/weapon/27400");
 ConVar sv_weaponmenu_url_hide("sv_weaponmenu_url_hide","0");
 ConVar sv_weaponmenu_url_unload("sv_weaponmenu_url_unload","1");
 
+#include "weapon_hl2mpbasehlmpcombatweapon.h"
 void CC_sv_menuweapon_list( const CCommand &args )
 {
 	if ( !UTIL_IsCommandIssuedByServerAdmin() )
@@ -91,7 +96,7 @@ void CC_sv_menuweapon_equip( const CCommand &args )
 	const char *classname = args.Arg(2);
 	
 	int bSpawn = atoi( args.Arg(3) );
-	bool result = false;
+	
 	if( bSpawn > 0 ) {
 		CBaseEntity *pWeapon = player->GiveNamedItem(classname);
 		if( pWeapon )
@@ -106,122 +111,33 @@ void CC_sv_menuweapon_equip( const CCommand &args )
 		bool pEmpty = !pWeapon->HasAmmo();
 		if( !pEmpty && FClassnameIs(pWeapon, classname) ) {
 			player->Weapon_Switch(pWeapon);
-			result = true;
 			break;
 		}
 	}
-	if( result )
-		engine->ServerCommand( "echo Merchant_1: True!\n");
-	else
-		engine->ServerCommand( "echo Merchant_0: False!\n");
 }
 
 static ConCommand sv_menuweapon_equip( "sv_menuweapon_equip", CC_sv_menuweapon_equip, "", FCVAR_GAMEDLL );
 
 #include "ai_behavior_follow.h"
 
-extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
-
 void CHL2MP_Player_fix::PostThink(void)
 {
 	BaseClass::PostThink();
-#ifdef CSTRIKE_DLL
-	if (m_lifeState >= LIFE_DYING && GetTeamNumber() != 0 && GetTeamNumber() != 1 && PlayerClass() != 0 )
-	{
-		if( m_flRespawn >= gpGlobals->curtime )
-			return;
 
-		respawn( this, false );
-		StopObserverMode();
-		State_Transition( STATE_ACTIVE );
-		return;
-	}
-	m_flRespawn = gpGlobals->curtime + 5.0;
-#endif
-	if( IsAlive() && m_fNextHealth <= gpGlobals->curtime && m_iHealth < 60  ) {
-		 m_fNextHealth = gpGlobals->curtime + RandomFloat(1.0, 3.0);
+	if( m_nButtons == 0 && m_fNextHealth <= gpGlobals->curtime && m_iHealth < 60  ) {
+		 m_fNextHealth = gpGlobals->curtime + 2.0;
 		 TakeHealth(1,DMG_GENERIC);
 	}
-
-	if( m_hHealSprite == NULL ) {
-		if( sv_healthbar.GetBool() )
-			m_hHealSprite = CSprite::SpriteCreate( sv_healthbar_sprite.GetString(), EyePosition() + Vector(0,0,sv_healthbar_z.GetFloat()), false );
-	
-		if ( m_hHealSprite ) {
-			m_hHealSprite->SetGlowProxySize( 32.0f );
-			//m_hHealSprite->SetParent( this );
-			m_hHealSprite->KeyValue("frame",sv_healthbar_frame.GetFloat());
-			m_hHealSprite->KeyValue("targetname","hl2mp.ru-healthbar");
-			DispatchSpawn( m_hHealSprite );
-			m_hHealSprite->m_flFrame = m_hHealSprite->Frames();
-			m_hHealSprite->SetOwnerEntity( this );
-		}
+	else if( m_nButtons != 0 ) {
+		m_fNextHealth = gpGlobals->curtime + 2.0;
 	}
 
 	if( m_hHealSprite ) {
-		if( GetAimTarget() && ( GetAimTarget()->IsNPC() || GetAimTarget()->IsPlayer() ) )
-			m_hHealBarTarget = GetAimTarget();
-		
-		if( m_hHealBarTarget ) {
-			if( m_hHealSprite->GetMoveParent() != m_hHealBarTarget ) {
-				m_hHealSprite->SetParent( NULL );
-				m_hHealSprite->SetParent( m_hHealBarTarget );
-				m_hHealSprite->RemoveEffects( EF_NODRAW );
-			}
-			
-			float flDist = ( GetAbsOrigin() - m_hHealBarTarget->GetAbsOrigin() ).LengthSqr();
-
-			if( sqrt( flDist ) > 2000.0 ) {
-				m_hHealSprite->SetRenderMode( kRenderNone );
-			}
-			else if( sqrt( flDist ) > 800.0 ) {
-				m_hHealSprite->SetScale(0.05);
-				m_hHealSprite->SetRenderMode( kRenderGlow );
-			}
-			else {
-				m_hHealSprite->SetRenderMode( kRenderTransAdd );
-				m_hHealSprite->SetScale(0.2);
-			}
-
-			float curhp = m_hHealBarTarget->GetHealth() / ( m_hHealBarTarget->GetMaxHealth() / 100.0 );
-			float curframe = curhp * ( m_hHealSprite->Frames() / 100 );
-			color32 m_color = m_hHealSprite->GetRenderColor();
-		
-			if( curhp < 40 ) {
-				m_color.r = 255;
-				m_color.g = 0;
-				m_color.b = 0;
-			}
-
-			if( curhp >= 40 ) {
-				CBaseEntity *m_hPTarget = m_hHealBarTarget;
-				CAI_BaseNPC *pNpc = dynamic_cast<CAI_BaseNPC *>( m_hPTarget );
-				if( pNpc && ( pNpc->IRelationType( this ) == D_HT || pNpc->IRelationType( this ) == D_FR ) ) {
-					m_color.r = 255;
-					m_color.g = 176;
-					m_color.b = 0;
-				}
-				else if( pNpc && ( pNpc->IRelationType( this ) == D_LI ) ) {
-					m_color.r = 0;
-					m_color.g = 255;
-					m_color.b = 0;
-				}
-				else {
-					m_color.r = 0;
-					m_color.g = 255;
-					m_color.b = 0;
-				}
-			}
-
-			m_hHealSprite->SetRenderColor( m_color.r, m_color.g, m_color.b );
-			if( curframe < 0 )
-				curframe = 0;
-			m_hHealSprite->m_flFrame.Set( curframe );
-			if( curhp <= 0 || !m_hHealBarTarget->IsAlive() ) {
-				m_hHealBarTarget = NULL;
-				m_hHealSprite->SetParent( NULL );
-				m_hHealSprite->AddEffects( EF_NODRAW );
-			}
+		if( (m_iHealth <= 40) && IsAlive() ) {
+			m_hHealSprite->TurnOn();
+		}
+		else {
+			m_hHealSprite->TurnOff();
 		}
 	}
 
@@ -230,17 +146,14 @@ void CHL2MP_Player_fix::PostThink(void)
 			edict_t *pEdict = engine->CreateFakeClient( "hl2mp.ru" );
 			if (pEdict)
 			{
-				m_hBot = ((CHL2MP_Player_fix *)CBaseEntity::Instance( pEdict ));
+				m_hBot = ((CHL2MP_Player *)CBaseEntity::Instance( pEdict ));
 				m_hBot->ClearFlags();
 				m_hBot->AddFlag( FL_CLIENT | FL_FAKECLIENT );
 			}
 		}
-		if( m_hBot ) {
-			m_hBot->Think();
-		}
 	}
-	
-	if( m_StuckLast != 0 && !m_hVehicle ) {
+
+	if( m_StuckLast != 0 ) {
 		if( m_fStuck == 0.0 )
 			m_fStuck = gpGlobals->curtime + 10.0;
 		
@@ -266,8 +179,9 @@ void CHL2MP_Player_fix::PostThink(void)
 	while ((pGoal = gEntList.FindEntityByClassname(pGoal, "ai_goal_follow")) != NULL)
 	{
 		CAI_FollowGoal *pNew = dynamic_cast<CAI_FollowGoal *>(pGoal);
-		if( pNew && pNew->GetActor() && pNew->GetActor()->IsAlive() && pNew->IsActive() )
+		if( pNew && pNew->GetActor() && pNew->GetActor()->IsAlive() && pNew->IsActive() ) {
 			pNew->EnableGoal( pNew->GetActor() );
+		}
 	}
 
 	if( m_nButtons & IN_RELOAD ) {
@@ -292,15 +206,21 @@ void CHL2MP_Player_fix::PostThink(void)
 	if( m_bForceServerRagdoll == 1 )
 		m_bForceServerRagdoll = 0;
 
-	CBaseEntity *m_hAimTarget = GetAimTarget();
-
-	if( m_nButtons & IN_USE && m_hAimTarget && !m_hAimTarget->GetPlayerMP() && !m_hAimTarget->IsAlive() ) {
-		if( m_fLoadFirmware <= gpGlobals->curtime && m_hAimTarget->IsNPC() ) {
+	Vector vecMuzzle = EyePosition();
+	const QAngle angEyeDir = EyeAngles();
+	Vector vecMuzzleDir;
+	AngleVectors(angEyeDir, &vecMuzzleDir);
+	Vector vEndPoint = vecMuzzle + vecMuzzleDir * 8192;
+	trace_t tr;
+	UTIL_TraceLine(vecMuzzle, vEndPoint, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
+	
+	if( m_nButtons & IN_USE && tr.fraction != -1.0 && tr.m_pEnt && !tr.m_pEnt->GetPlayerMP() && !tr.m_pEnt->IsAlive() ) {
+		if( m_fLoadFirmware <= gpGlobals->curtime && FClassnameIs(tr.m_pEnt, "npc_*") ) {
 			m_fLoadFirmware = gpGlobals->curtime + 0.1;
 			if( m_iLoadFirmware >= 100 ) {
 				m_iLoadFirmware = 100;
 				ClientPrint( this, HUD_PRINTCENTER, "Loading firmware successfully" );
-				m_hAimTarget->SetPlayerMP( this );
+				tr.m_pEnt->SetPlayerMP( this );
 			}
 			else {
 				ClientPrint( this, HUD_PRINTCENTER, UTIL_VarArgs( "Loading new firmware: %d%%", m_iLoadFirmware++ ) );
@@ -312,9 +232,9 @@ void CHL2MP_Player_fix::PostThink(void)
 		m_iLoadFirmware = 0;
 	}
 
-	if( m_nButtons & IN_USE && m_hAimTarget && (m_hAimTarget->IsPlayer() || m_hAimTarget->IsNPC()) ) {
-		if( m_hHealerTarget != m_hAimTarget )
-			m_hHealerTarget = m_hAimTarget;
+	if( m_nButtons & IN_USE && tr.fraction != -1.0 && tr.m_pEnt && (tr.m_pEnt->IsPlayer() || tr.m_pEnt->GetPlayerMP() && tr.m_pEnt->GetPlayerMP()->IsNPC() || tr.m_pEnt->IsNPC()) ) {
+		if( m_hHealerTarget != tr.m_pEnt )
+			m_hHealerTarget = tr.m_pEnt;
 
 		if( m_hHealerTarget && !m_hHealerTarget->GetPlayerMP() && m_hHealerTarget->IsNPC() ) {
 			if( IRelationType( m_hHealerTarget ) != D_LI )
@@ -327,6 +247,16 @@ void CHL2MP_Player_fix::PostThink(void)
 	}
 
 	if( sv_healer.GetInt() && m_hHealerTarget ) {
+		const char *hName = NULL;
+		if( m_hHealerTarget->IsPlayer() ) {
+			CBasePlayer *hTarget = ToHL2MPPlayer( m_hHealerTarget );
+			if( hTarget )
+				hName = hTarget->GetPlayerName();
+		}
+		else {
+			hName = nameReplace( m_hHealerTarget );
+		}
+
 		if( !IsAlive() || !m_hHealerTarget->IsAlive() || m_hHealerTarget->GetHealth() >= m_hHealerTarget->GetMaxHealth() || m_hHealerTarget->GetMaxHealth() == 0 || !FVisible(m_hHealerTarget, MASK_SHOT) )
 			m_hHealerTarget = NULL;
 
@@ -337,11 +267,10 @@ void CHL2MP_Player_fix::PostThink(void)
 				vecSrc = Weapon_ShootPosition();
 
 			CChargeToken::CreateChargeToken(vecSrc, this, m_hHealerTarget);
-			m_fNextHealth = gpGlobals->curtime + 10.0;
 		}
 	}
 
-	if( IsAlive() && sv_npchp.GetBool() && m_hAimTarget ) {
+	if( IsAlive() && sv_npchp.GetBool() && tr.fraction != -1.0 && tr.m_pEnt ) {
 		char msg[255];
 		hudtextparms_s tTextParam;
 		tTextParam.x = sv_npchp_x.GetFloat();
@@ -353,17 +282,17 @@ void CHL2MP_Player_fix::PostThink(void)
 		tTextParam.a1 = 255;
 		tTextParam.fadeinTime = 0;
 		tTextParam.fadeoutTime = 0;
-		tTextParam.holdTime = sv_npchp_holdtime.GetFloat();
+		tTextParam.holdTime = 0.5;
 		tTextParam.fxTime = 0;
-		tTextParam.channel = 5;
-		if( m_hAimTarget->IsNPC() ) {
-			float result = m_hAimTarget->GetHealth() / (m_hAimTarget->GetMaxHealth() / 100.0);
+		tTextParam.channel = 0;
+		if( tr.m_pEnt->IsNPC() ) {
+			float result = tr.m_pEnt->GetHealth() / (tr.m_pEnt->GetMaxHealth() / 100.0);
 			int health = ceil( result );
 			if( health < 0 )
 				return;
 
 			const char *prefix = NULL;
-			CAI_BaseNPC *pNpc = dynamic_cast<CAI_BaseNPC *>(m_hAimTarget);
+			CAI_BaseNPC *pNpc = dynamic_cast<CAI_BaseNPC *>(tr.m_pEnt);
 			if( !pNpc )
 				return;
 
@@ -381,30 +310,30 @@ void CHL2MP_Player_fix::PostThink(void)
 				prefix = "None";
 			}
 			const char *enemy = "None";
-			if( m_hAimTarget->GetEnemy() ) {
-				float nresult = m_hAimTarget->GetEnemy()->GetHealth() / (m_hAimTarget->GetEnemy()->GetMaxHealth() / 100.0);
+			if( tr.m_pEnt->GetEnemy() ) {
+				float nresult = tr.m_pEnt->GetEnemy()->GetHealth() / (tr.m_pEnt->GetEnemy()->GetMaxHealth() / 100.0);
 				int nhealth = floor( nresult );
 				if( nhealth < 0 )
 					nhealth = 0;
-				enemy = UTIL_VarArgs( "%s(%d%%)", nameReplace( m_hAimTarget->GetEnemy() ), nhealth );
+				enemy = UTIL_VarArgs( "%s(%d%%)", nameReplace( tr.m_pEnt->GetEnemy() ), nhealth );
 			}
-			if( m_hAimTarget->GetPlayerMP() ) {
-				Q_snprintf( msg, sizeof(msg), "Relationship: %s\nName: %s\nHealth: %d%%\nScore: %d\nOwner: %s\nEnemy: %s", prefix, nameReplace( m_hAimTarget ), health, m_hAimTarget->GetScore(),m_hAimTarget->GetPlayerMP()->GetPlayerName(), enemy );
+			if( tr.m_pEnt->GetPlayerMP() ) {
+				Q_snprintf( msg, sizeof(msg), "Relationship: %s\nName: %s\nHealth: %d%%\nOwner: %s\nEnemy: %s", prefix, nameReplace(tr.m_pEnt), health, tr.m_pEnt->GetPlayerMP()->GetPlayerName(), enemy );
 			}
 			else {
-				Q_snprintf( msg, sizeof(msg), "Relationship: %s\nName: %s\nHealth: %d%%", prefix, nameReplace( m_hAimTarget ), health );
+				Q_snprintf( msg, sizeof(msg), "Relationship: %s\nName: %s\nHealth: %d%%", prefix, nameReplace(tr.m_pEnt), health );
 			}
 			UTIL_HudMessage(this, tTextParam, msg);
 		}
 
-		CPropVehicleDriveable *veh = dynamic_cast< CPropVehicleDriveable * >( m_hAimTarget );
+		CPropVehicleDriveable *veh = dynamic_cast< CPropVehicleDriveable * >( tr.m_pEnt );
 		if( veh ) {
 			if( veh->GetPlayerMP() && !m_hVehicle ) {
 				Q_snprintf( msg, sizeof(msg), "Owner: %s", veh->GetPlayerMP()->GetPlayerName() );
 				UTIL_HudMessage( this, tTextParam, msg );
 			}
 			else {
-				CBasePlayer *driver = dynamic_cast<CBasePlayer*>( veh->GetDriver() );
+				CBasePlayer *driver = ToHL2MPPlayer( veh->GetDriver() );
 				if( driver && driver->GetVehicleEntity() == veh && driver != this ) {
 					Q_snprintf(msg, sizeof(msg), "Driver: %s", driver->GetPlayerName());
 					UTIL_HudMessage(this, tTextParam, msg);
@@ -412,9 +341,9 @@ void CHL2MP_Player_fix::PostThink(void)
 			}
 		}
 
-		CPropCrane *veh2 = dynamic_cast< CPropCrane * >( m_hAimTarget );
+		CPropCrane *veh2 = dynamic_cast< CPropCrane * >( tr.m_pEnt );
 		if( veh2 ) {
-			CBasePlayer *driver = dynamic_cast<CBasePlayer*>( veh2->GetDriver() );
+			CBasePlayer *driver = ToHL2MPPlayer( veh2->GetDriver() );
 			if( driver && driver->GetVehicleEntity() == veh2 && driver != this ) {
 				Q_snprintf(msg, sizeof(msg), "Driver: %s", driver->GetPlayerName());
 				UTIL_HudMessage(this, tTextParam, msg);
@@ -425,17 +354,14 @@ void CHL2MP_Player_fix::PostThink(void)
 
 void CHL2MP_Player_fix::PickupObject(CBaseEntity *pObject, bool bLimitMassAndSize)
 {
-	if( !sv_player_pickup.GetBool() && !IsAdmin( this ) )
-		return;
-
-	if( pObject->GetPlayerMP() && pObject->GetPlayerMP() != this )
+	if( !sv_player_pickup.GetBool() )
 		return;
 
 	if ( GetGroundEntity() == pObject )
 		return;
 	
 	if ( bLimitMassAndSize == true ) {
-		if ( CBasePlayer::CanPickupObject( pObject, 350, 250 ) == false )
+		if ( CBasePlayer::CanPickupObject( pObject, 35, 128 ) == false )
 			 return;
 	}
 
@@ -450,7 +376,6 @@ ConVar sv_player_random_start("sv_player_random_start", "0");
 CBaseEntity* CHL2MP_Player_fix::EntSelectSpawnPoint(void)
 {
 	if( sv_player_random_start.GetInt() ) {
-
 		int playeronline = 0;
 		for( int i = 1; i <= gpGlobals->maxClients; i++ )
 		{
@@ -458,7 +383,6 @@ CBaseEntity* CHL2MP_Player_fix::EntSelectSpawnPoint(void)
 			if( pPlayer && pPlayer->IsConnected() && pPlayer->IsAlive() && !pPlayer->IsInAVehicle() && pPlayer != this )
 				playeronline++;
 		}
-
 		if( playeronline != 0 ) {
 			int rndplayer = RandomInt( 1, playeronline );
 			playeronline = 0;
@@ -486,7 +410,7 @@ CBaseEntity* CHL2MP_Player_fix::EntSelectSpawnPoint(void)
 	
 	const char *pSpawnpointName = "info_player_deathmatch";
 
-	/*if( HL2MPRules()->IsTeamplay() == true )
+	if( HL2MPRules()->IsTeamplay() == true )
 	{
 		if( GetTeamNumber() == TEAM_COMBINE ) {
 			pSpawnpointName = "info_player_combine";
@@ -494,10 +418,10 @@ CBaseEntity* CHL2MP_Player_fix::EntSelectSpawnPoint(void)
 		else if( GetTeamNumber() == TEAM_REBELS ) {
 			pSpawnpointName = "info_player_rebel";
 		}
-	}*/
 
-	if( gEntList.FindEntityByClassname( NULL, pSpawnpointName ) == NULL ) {
-		pSpawnpointName = "info_player_deathmatch";
+		if( gEntList.FindEntityByClassname( NULL, pSpawnpointName ) == NULL ) {
+			pSpawnpointName = "info_player_deathmatch";
+		}
 	}
 
 	if( gEntList.FindEntityByClassname( NULL, pSpawnpointName ) == NULL ) {
@@ -514,11 +438,25 @@ CBaseEntity* CHL2MP_Player_fix::EntSelectSpawnPoint(void)
 		}
 	}
 
+	int spawn = 0;
 	CBaseEntity *pEnt = NULL;
 	while( ( pEnt = gEntList.FindEntityByClassname( pEnt, pSpawnpointName ) ) != NULL ) {
-		CHLSpawnPoint *pSpawn = (CHLSpawnPoint *)pEnt;
+		CSpawnPoint *pSpawn = (CSpawnPoint *)pEnt;
 		if( pSpawn && pSpawn->m_iDisabled == FALSE ) {
-			return pSpawn;
+			spawn++;
+		}
+	}
+
+	int rndspawn = random->RandomInt( 1, spawn );
+	spawn = 0;
+	pEnt = NULL;
+	while( ( pEnt = gEntList.FindEntityByClassname( pEnt, pSpawnpointName ) ) != NULL ) {
+		CSpawnPoint *pSpawn = (CSpawnPoint *)pEnt;
+		if( pSpawn && pSpawn->m_iDisabled == FALSE ) {
+			spawn++;
+			if( spawn == rndspawn ) {
+				return pEnt;
+			}
 		}
 	}
 
@@ -534,29 +472,18 @@ void CHL2MP_Player_fix::ChangeTeam(int iTeam)
 	BaseClass::ChangeTeam(iTeam);
 }
 
-void CHL2MP_Player_fix::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator )
-{
-	CTakeDamageInfo inputInfo = info;
-	if( IsAdmin( inputInfo.GetAttacker() ) )
-			inputInfo.SetForceFriendlyFire( true );
-
-	BaseClass::TraceAttack( inputInfo, vecDir, ptr, pAccumulator );
-}
-
 ConVar mp_plr_nodmg_plr("mp_plr_nodmg_plr", "0");
 
-int CHL2MP_Player_fix::OnTakeDamage( const CTakeDamageInfo &info )
+int CHL2MP_Player_fix::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 {
-	CTakeDamageInfo inputInfo = info; 
-
 	if( inputInfo.GetAttacker() ) {
-		if( IsAdmin( inputInfo.GetAttacker() ) )
-			inputInfo.SetForceFriendlyFire( true );
-
-		if( mp_plr_nodmg_plr.GetInt() && IsPlayer() && inputInfo.GetAttacker()->IsPlayer() && ( inputInfo.GetAttacker() != this ) && !IsAdmin( inputInfo.GetAttacker() ) )
+		if( mp_plr_nodmg_plr.GetInt() && IsPlayer() && inputInfo.GetAttacker()->IsPlayer() && ( inputInfo.GetAttacker() != this ) )
 			return 0;
 
 		if( !inputInfo.GetAttacker()->IsPlayer() && IRelationType( inputInfo.GetAttacker() ) == D_LI )
+			return 0;
+
+		if( inputInfo.GetAttacker()->GetPlayerMP() )
 			return 0;
 	}
 

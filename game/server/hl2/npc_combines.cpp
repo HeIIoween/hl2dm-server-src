@@ -13,7 +13,7 @@
 #include "soundent.h"
 #include "ndebugoverlay.h"
 #include "npcevent.h"
-#include "player.h"
+#include "hl2/hl2_player.h"
 #include "game.h"
 #include "ammodef.h"
 #include "explode.h"
@@ -339,20 +339,22 @@ void CNPC_CombineS::Event_Killed( const CTakeDamageInfo &info )
 			}
 		}
 
+		CHalfLife2 *pHL2GameRules = static_cast<CHalfLife2 *>(g_pGameRules);
+
 		// Attempt to drop health
-		if ( g_pGameRules->NPC_ShouldDropHealth( pPlayer ) )
+		if ( pHL2GameRules->NPC_ShouldDropHealth( pPlayer ) )
 		{
 			DropItem( "item_healthvial", WorldSpaceCenter()+RandomVector(-4,4), RandomAngle(0,360) );
-			g_pGameRules->NPC_DroppedHealth();
+			pHL2GameRules->NPC_DroppedHealth();
 		}
 		
 		if ( HasSpawnFlags( SF_COMBINE_NO_GRENADEDROP ) == false )
 		{
 			// Attempt to drop a grenade
-			if ( g_pGameRules->NPC_ShouldDropGrenade( pPlayer ) )
+			if ( pHL2GameRules->NPC_ShouldDropGrenade( pPlayer ) )
 			{
 				DropItem( "weapon_frag", WorldSpaceCenter()+RandomVector(-4,4), RandomAngle(0,360) );
-				g_pGameRules->NPC_DroppedGrenade();
+				pHL2GameRules->NPC_DroppedGrenade();
 			}
 		}
 	}

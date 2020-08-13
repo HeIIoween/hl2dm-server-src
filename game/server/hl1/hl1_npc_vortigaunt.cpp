@@ -66,7 +66,7 @@ void CNPC_Vortigaunt::Spawn()
 {
 	Precache( );
 
-	SetModel( "models/vortigaunt.mdl" );
+	SetModel( "models/islave.mdl" );
 	
 	SetRenderColor( 255, 255, 255, 255 );
 
@@ -108,7 +108,7 @@ void CNPC_Vortigaunt::Precache()
 {
 	BaseClass::Precache();
 
-	PrecacheModel("models/vortigaunt.mdl");
+	PrecacheModel("models/islave.mdl");
 	PrecacheModel("sprites/lgtning.vmt");
 
 	PrecacheScriptSound( "Vortigaunt.Pain" );
@@ -137,7 +137,7 @@ Disposition_t CNPC_Vortigaunt::IRelationType ( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Vortigaunt::Classify ( void )
 {
-	return	CLASS_ZOMBIE;
+	return	CLASS_ALIEN_MILITARY;
 }
 
 void CNPC_Vortigaunt::CallForHelp( char *szClassname, float flDist, CBaseEntity * pEnemy, Vector &vecLocation )

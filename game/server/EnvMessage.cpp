@@ -170,7 +170,7 @@ private:
 	float		m_flLogoLength;
 };
 
-//LINK_ENTITY_TO_CLASS( env_credits, CCredits );
+LINK_ENTITY_TO_CLASS( env_credits, CCredits );
 
 BEGIN_DATADESC( CCredits )
 	DEFINE_INPUTFUNC( FIELD_VOID, "RollCredits", InputRollCredits ),

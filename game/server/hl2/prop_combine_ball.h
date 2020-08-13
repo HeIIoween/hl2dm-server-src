@@ -15,7 +15,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "player_pickup.h"	// for combine ball inheritance
-#include "particle_system.h"
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -31,7 +30,7 @@ class CPropCombineBall : public CBaseAnimating, public CDefaultPlayerPickupVPhys
 public:
 	DECLARE_CLASS( CPropCombineBall, CBaseAnimating );
 	DECLARE_DATADESC();
-	//DECLARE_SERVERCLASS();
+	DECLARE_SERVERCLASS();
 
 	virtual void Precache();
 	virtual void Spawn();
@@ -194,7 +193,6 @@ private:
 	CNetworkVar( bool, m_bHeld );
 	CNetworkVar( bool, m_bLaunched );
 	CNetworkVar( float, m_flRadius );
-	CHandle<CParticleSystem> m_hSpitEffect;
 };
 
 class CFuncCombineBallSpawner : public CBaseEntity

@@ -13,8 +13,7 @@
 #include "cbase.h"
 #include "player_pickup.h"
 #include "weapon_physcannon.h"
-#include "soundenvelope.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "smoke_trail.h"
 #include "ai_basenpc_physicsflyer.h"
 

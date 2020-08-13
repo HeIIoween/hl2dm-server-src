@@ -301,7 +301,7 @@ void CGrenadeFrag::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 {
 	SetThrower( pPhysGunUser );
 
-#ifndef HL2MP
+#ifdef HL2MP
 	SetTimer( FRAG_GRENADE_GRACE_TIME_AFTER_PICKUP, FRAG_GRENADE_GRACE_TIME_AFTER_PICKUP / 2);
 
 	BlipSound();

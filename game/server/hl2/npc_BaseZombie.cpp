@@ -43,7 +43,7 @@
 #include "vstdlib/random.h"
 #include "engine/IEngineSound.h"
 #include "props.h"
-#include "gamerules.h"
+#include "hl2_gamerules.h"
 #include "weapon_physcannon.h"
 #include "ammodef.h"
 #include "vehicle_base.h"

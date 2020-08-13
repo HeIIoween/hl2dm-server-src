@@ -160,7 +160,9 @@ void CChargeToken::SeekThink( void )
 
 	CBaseEntity *pOwner = GetOwnerEntity();
 	if( pOwner && pOwner->IsPlayer() ) {
-		if( m_hTarget->GetHealth() >= m_hTarget->GetMaxHealth() || !FVisible( m_hTarget, MASK_SHOT ) ) {
+		if( m_hTarget->GetHealth() >= m_hTarget->GetMaxHealth() || FVisible( m_hTarget, MASK_SHOT ) ) {
+		//CHL2MP_Player_fix *pPlayer = dynamic_cast<CHL2MP_Player_fix*>(pOwner);
+		//if( pPlayer && pPlayer->m_hHealerTarget == NULL ) {	
 			FadeAndDie();
 			return;
 		}

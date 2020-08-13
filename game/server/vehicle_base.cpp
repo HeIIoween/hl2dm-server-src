@@ -545,7 +545,7 @@ void CPropVehicleDriveable::VehicleAngleVectors( const QAngle &angles, Vector *p
 	}
 }
   
-#include "hl2mp_player_fix.h"
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -555,31 +555,43 @@ void CPropVehicleDriveable::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, 
 	if ( !pPlayer )
 		return;
 
-	if( m_hPlayer.Get() == pPlayer && pPlayer->GetVehicleEntity() == this )
-		return;
-
-	if( GetPlayerMP() && GetPlayerMP() != pPlayer ) {
-		CPropVehicleDriveable *pEnt = NULL;
-		while ( ( pEnt = (CPropVehicleDriveable *)gEntList.FindEntityByClassname( pEnt, GetClassname() ) ) != NULL )
-		{
-			if( pEnt != this && pEnt->GetPlayerMP() == pPlayer ) {
-				float flDist = ( pEnt->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
-				if( sqrt(flDist) < 512.0 ) {
-					pEnt->Use( pActivator, pCaller, useType, 1 );
-					return;
-				}
+	CPropVehicleDriveable *pEnt = NULL;
+	while ( ( pEnt = (CPropVehicleDriveable *)gEntList.FindEntityByClassname( pEnt, GetClassname() ) ) != NULL )
+	{
+		if( pEnt != this && pEnt->GetPlayerMP() == pPlayer ) {
+			float flDist = ( pEnt->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
+			if( sqrt(flDist) < 512.0 ) {
+				pEnt->Use( pActivator, pCaller, useType, 1 );
+				return;
 			}
 		}
 	}
-	
-	if( GetPlayerMP() && GetPlayerMP() != pPlayer && !IsAdmin( pPlayer ) ) {
-		ClientPrint( pPlayer, HUD_PRINTCENTER, "[info] This is not your vehicle!" );
+
+	if( m_hPlayer && m_hPlayer->GetVehicleEntity() != this )
+		m_hPlayer = NULL;
+
+	if( GetPlayerMP() && GetPlayerMP() != pPlayer )
 		return;
+	
+	CBaseEntity *vOwner = GetOwnerEntity();
+	if( vOwner && FClassnameIs(vOwner,"info_vehicle_spawn") ) {
+		CBaseEntity *pEnt = NULL;
+		while ( ( pEnt = gEntList.FindEntityByClassname( pEnt, GetClassname() ) ) != NULL )
+		{
+			if( pEnt != this && pEnt->GetPlayerMP() == pPlayer ) {
+				ClientPrint( pPlayer, HUD_PRINTCENTER, "[info] This is not your vehicle!" );
+				return;
+			}
+		}
+
+		CBasePlayer *mpPlayer = GetPlayerMP();
+		if( mpPlayer == NULL )
+			SetPlayerMP( pPlayer );
 	}
 
 	ResetUseKey( pPlayer );
 
-	m_pServerVehicle->HandlePassengerEntry( pPlayer, true );
+	m_pServerVehicle->HandlePassengerEntry( pPlayer, (value>0) );
 }
 
 //-----------------------------------------------------------------------------
@@ -588,12 +600,9 @@ void CPropVehicleDriveable::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, 
 CBaseEntity *CPropVehicleDriveable::GetDriver( void ) 
 { 
 	if ( m_hNPCDriver ) 
-		return m_hNPCDriver;
+		return m_hNPCDriver; 
 
-	if( m_hPlayer && m_hPlayer->GetVehicleEntity() == this )
-		return m_hPlayer;
-
-	return NULL;
+	return m_hPlayer; 
 }
 
 //-----------------------------------------------------------------------------

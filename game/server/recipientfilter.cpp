@@ -233,7 +233,7 @@ void CRecipientFilter::RemovePlayersFromBitMask( CBitVec< ABSOLUTE_PLAYER_LIMIT 
 
 void CRecipientFilter::AddRecipientsByPVS( const Vector& origin )
 {
-	if ( gpGlobals->maxClients == 1 )
+	if ( gpGlobals->maxClients > 1 )
 	{
 		AddAllPlayers();
 	}
@@ -247,7 +247,7 @@ void CRecipientFilter::AddRecipientsByPVS( const Vector& origin )
 
 void CRecipientFilter::RemoveRecipientsByPVS( const Vector& origin )
 {
-	if ( gpGlobals->maxClients == 1 )
+	if ( gpGlobals->maxClients > 1 )
 	{
 		m_Recipients.RemoveAll();
 	}

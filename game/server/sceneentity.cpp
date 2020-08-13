@@ -3888,7 +3888,8 @@ CBaseEntity *CSceneEntity::FindNamedEntityClosest( const char *name, CBaseEntity
 	} 
 	else if ( !stricmp( name, "Player" ) || !stricmp( name, "!player" ))
 	{
-		return UTIL_GetLocalPlayer();
+		entity = ( gpGlobals->maxClients == 1 ) ? ( CBaseEntity * )UTIL_GetLocalPlayer() : NULL;
+		return entity;
 	}
 	else if ( !stricmp( name, "!target1" ) )
 	{

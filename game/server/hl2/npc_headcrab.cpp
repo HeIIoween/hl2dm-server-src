@@ -30,7 +30,7 @@
 #include "world.h"
 #include "npc_bullseye.h"
 #include "physics_npc_solver.h"
-#include "gamerules.h"
+#include "hl2_gamerules.h"
 #include "decals.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -246,10 +246,7 @@ void CBaseHeadcrab::Spawn( void )
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetMoveType( MOVETYPE_STEP );
 
-	if( GetPlayerMP() )
-		SetCollisionGroup( COLLISION_GROUP_PLAYER );
-	else
-		SetCollisionGroup( HL2COLLISION_GROUP_HEADCRAB );
+	SetCollisionGroup( HL2COLLISION_GROUP_HEADCRAB );
 
 	SetViewOffset( Vector(6, 0, 11) ) ;		// Position of the eyes relative to NPC's origin.
 

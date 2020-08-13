@@ -87,7 +87,7 @@ class IHasAttributes;
 
 typedef CUtlVector< CBaseEntity* > EntityList_t;
 
-#if !defined( HL2_DLL )
+#if defined( HL2_DLL )
 
 // For CLASSIFY
 enum Class_T
@@ -1810,14 +1810,6 @@ public:
 	const char *m_iszCustomID;
 	CHandle<CBasePlayer> m_phl2mpru;
 	bool pfriend;
-
-	int m_iScore;
-	void SetScore( int iScore ) { m_iScore = iScore; };
-	int GetScore( void ) {  return m_iScore; };
-
-	const char *GetSectionName ( void ) { return STRING(m_iszSectionID); }
-	void SetSectionName ( const char *section ) { m_iszSectionID = AllocPooledString( section); }
-	string_t m_iszSectionID;
 };
 
 // Send tables exposed in this module.

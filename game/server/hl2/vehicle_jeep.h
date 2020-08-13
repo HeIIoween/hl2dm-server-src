@@ -33,9 +33,8 @@ class CPropJeep : public CPropVehicleDriveable
 {
 public:
 	DECLARE_CLASS( CPropJeep, CPropVehicleDriveable );
-#ifdef CSTRIKE_DLL
-	DECLARE_SERVERCLASS();
-#endif
+
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 	CPropJeep( void );

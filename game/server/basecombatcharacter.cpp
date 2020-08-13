@@ -15,13 +15,7 @@
 #include "ai_squadslot.h"
 #include "ammodef.h"
 #include "ndebugoverlay.h"
-
-#if CSTRIKE_DLL
-#include "cs_player.h"
-#else
 #include "player.h"
-#endif
-
 #include "physics.h"
 #include "engine/IEngineSound.h"
 #include "tier1/strtools.h"
@@ -772,7 +766,7 @@ CBaseCombatCharacter::~CBaseCombatCharacter( void )
 void CBaseCombatCharacter::Spawn( void )
 {
 	BaseClass::Spawn();
-
+	
 	SetBlocksLOS( false );
 	m_aliveTimer.Start();
 	m_hasBeenInjured = 0;
@@ -1526,9 +1520,7 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 		// in single player create ragdolls on the server when the player hits someone
 		// with their vehicle - for more dramatic death/collisions
 		CBaseEntity *pRagdoll = CreateServerRagdoll( this, m_nForceBone, info2, COLLISION_GROUP_INTERACTIVE_DEBRIS, true );
-		if( pRagdoll ) {
-			FixupBurningServerRagdoll( pRagdoll );
-		}
+		FixupBurningServerRagdoll( pRagdoll );
 		RemoveDeferred();
 		return true;
 	}
@@ -1919,10 +1911,9 @@ void CBaseCombatCharacter::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector
 	// If I'm an NPC, fill the weapon with ammo before I drop it.
 	if ( GetFlags() & FL_NPC )
 	{
-		UTIL_Remove( pWeapon );
 		if ( pWeapon->UsesClipsForAmmo1() )
 		{
-			//pWeapon->m_iClip1 = pWeapon->GetDefaultClip1();
+			pWeapon->m_iClip1 = pWeapon->GetDefaultClip1();
 
 			/*if( FClassnameIs( pWeapon, "weapon_smg1" ) )
 			{
@@ -1934,7 +1925,7 @@ void CBaseCombatCharacter::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector
 		}
 		if ( pWeapon->UsesClipsForAmmo2() )
 		{
-			//pWeapon->m_iClip2 = pWeapon->GetDefaultClip2();
+			pWeapon->m_iClip2 = pWeapon->GetDefaultClip2();
 		}
 
 		if ( IsXbox() )
@@ -2475,7 +2466,7 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &currentinfo
 {
 	CTakeDamageInfo info = currentinfo;
 	bool dmgpnpc = false;
-	if( info.GetAttacker() && info.GetAttacker()->IsNPC() && info.GetAttacker()->GetPlayerMP() ) {
+	if( info.GetAttacker() && info.GetAttacker()->GetPlayerMP() ) {
 		info.SetAttacker( info.GetAttacker()->GetPlayerMP() );
 		dmgpnpc = true;
 	}
@@ -2524,17 +2515,8 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &currentinfo
 				m_hTestPL[pPlayer->entindex()] += m_iHealth;
 
 			if( !GetPlayerMP() && m_hTestPL[pPlayer->entindex()] >= 500.0 ) {
-				if( dmgpnpc && currentinfo.GetAttacker() ) {
-					currentinfo.GetAttacker()->SetScore( currentinfo.GetAttacker()->GetScore() + 1 );
-				}
 				pPlayer->IncrementFragCount( 1 );
 				pPlayer->AddPointsToTeam( 1, false );
-#ifdef CSTRIKE_DLL
-				CCSPlayer *CSpPlayer = ToCSPlayer( pPlayer );
-				if( CSpPlayer )
-					CSpPlayer->AddAccount( RandomInt( 150,600 ) );
-#endif
-
 				m_hTestPL[pPlayer->entindex()] = 0.0;
 			}
 		}
@@ -2803,7 +2785,7 @@ Disposition_t CBaseCombatCharacter::IRelationType ( CBaseEntity *pTarget )
 		}
 
 		if( pfriend || GetPlayerMP() || ( FClassnameIs( this, "npc_merchant" ) && Classify() != CLASS_NONE  ) ) {
-			if( pTarget->Classify() == CLASS_BULLSEYE || FClassnameIs( pTarget, "npc_enemyfinder" ) || pTarget->IsPlayer() )
+			if( pTarget->Classify() == CLASS_BULLSEYE || pTarget->IsPlayer() )
 				return D_LI;
 
 			CBaseEntity *tOwner = pTarget->GetOwnerEntity();

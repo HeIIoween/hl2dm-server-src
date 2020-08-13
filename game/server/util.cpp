@@ -644,7 +644,7 @@ CBasePlayer *UTIL_GetLocalPlayer(void)
 	for (int i = 1; i <= gpGlobals->maxClients; i++)
 	{
 		CBasePlayer *pPlayer = UTIL_PlayerByIndex(i);
-		if ( pPlayer && pPlayer->IsConnected() && !pPlayer->IsFakeClient() && pPlayer->IsAlive() ) {
+		if ( pPlayer && pPlayer->IsConnected() && !pPlayer->IsFakeClient() ) {
 			return pPlayer;
 		}
 	}
@@ -659,7 +659,7 @@ CBasePlayer *UTIL_GetNearestPlayer(const Vector& pos)
 	for (int iClient = 1; iClient <= gpGlobals->maxClients; ++iClient)
 	{
 		CBasePlayer *pEnt = UTIL_PlayerByIndex(iClient);
-		if (!pEnt || pEnt->IsDisconnecting() || pEnt->IsFakeClient() || !pEnt->IsAlive() )
+		if (!pEnt || pEnt->IsDisconnecting() || pEnt->IsFakeClient() )
 			continue;
 
 		// Distance is the deciding factor
@@ -1136,7 +1136,7 @@ void UTIL_HudHintText( CBaseEntity *pEntity, const char *pMessage )
 
 	CSingleUserRecipientFilter user( (CBasePlayer *)pEntity );
 	user.MakeReliable();
-	UserMessageBegin( user, "HintText" );
+	UserMessageBegin( user, "KeyHintText" );
 		WRITE_BYTE( 1 );	// one string
 		WRITE_STRING( pMessage );
 	MessageEnd();
@@ -1377,23 +1377,65 @@ void UTIL_SetModel( CBaseEntity *pEntity, const char *pModelName )
 	if (!pEntity)
 		return;
 
-	if ( !pEntity->IsPlayer() ) {
+	if (!pEntity->IsPlayer()) {
 		const char *newModel = NULL;
 		if (FClassnameIs(pEntity, "npc_combine_s")) {
 			if (strcmpi(pModelName, "models/combine_soldier.mdl") == 0){
-				newModel = "models/combine_soldier.mdl";
+				newModel = "models/hl2/combine_soldier.mdl";
 			}
 			else if (strcmpi(pModelName, "models/combine_soldier_prisonguard.mdl") == 0){
-				newModel = "models/combine_soldier_prisonguard.mdl";
+				newModel = "models/hl2/combine_soldier_prisonguard.mdl";
 			}
 			else if (strcmpi(pModelName, "models/combine_super_soldier.mdl") == 0){
-				newModel = "models/combine_super_soldier.mdl";
+				newModel = "models/hl2/combine_super_soldier.mdl";
 			}
 			else {
-				newModel = "models/combine_soldier.mdl";
+				newModel = "models/dods/german_assault.mdl";
 			}
 		}
-		if (strcmpi(pModelName, "models/stalker.mdl") == 0) {
+		else if (FClassnameIs(pEntity, "npc_citizen")) {
+			newModel = UTIL_VarArgs( "models/hl2/humans/%s/%s", g_ppszModelLocs[rand() % 2], g_ppszRandomHeads[rand() % 15] );
+		}
+		if ((strcmpi(pModelName, "models/police.mdl") == 0) || (strcmpi(pModelName, "models/police_cheaple.mdl") == 0)) {
+			newModel = "models/hl2/police.mdl";
+		}
+		else if (strcmpi(pModelName, "models/barney.mdl") == 0) {
+			newModel = "models/hl2/barney.mdl";
+		}
+		else if (strcmpi(pModelName, "models/breen.mdl") == 0) {
+			newModel = "models/hl2/breen.mdl";
+		}
+		else if (strcmpi(pModelName, "models/breen_monitor.mdl") == 0) {
+			newModel = "models/hl2/breen_monitor.mdl";
+		}
+		else if (strcmpi(pModelName, "models/alyx.mdl") == 0) {
+			newModel = "models/hl2/alyx.mdl";
+		}
+		else if (strcmpi(pModelName, "models/gman.mdl") == 0) {
+			newModel = "models/hl2/gman.mdl";
+		}
+		else if (strcmpi(pModelName, "models/gman_high.mdl") == 0) {
+			newModel = "models/hl2/gman_high.mdl";
+		}
+		else if (strcmpi(pModelName, "models/monk.mdl") == 0) {
+			newModel = "models/hl2/monk.mdl";
+		}
+		else if (strcmpi(pModelName, "models/kleiner.mdl") == 0) {
+			newModel = "models/hl2/kleiner.mdl";
+		}
+		else if (strcmpi(pModelName, "models/eli.mdl") == 0) {
+			newModel = "models/hl2/eli.mdl";
+		}
+		else if (strcmpi(pModelName, "models/monk.mdl") == 0) {
+			newModel = "models/hl2/monk.mdl";
+		}
+		else if (strcmpi(pModelName, "models/mossman.mdl") == 0) {
+			newModel = "models/hl2/mossman.mdl";
+		}
+		else if (strcmpi(pModelName, "models/odessa.mdl") == 0) {
+			newModel = "models/hl2/odessa.mdl";
+		}
+		else if (strcmpi(pModelName, "models/stalker.mdl") == 0) {
 			newModel = "models/hl2/stalker.mdl";
 		}
 		if (newModel) {

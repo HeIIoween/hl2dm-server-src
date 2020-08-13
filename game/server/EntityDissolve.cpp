@@ -350,13 +350,12 @@ void CEntityDissolve::DissolveThink( void )
 		// Necessary to cause it to do the appropriate death cleanup
 		// Yeah, the player may have nothing to do with it, but
 		// passing NULL to TakeDamage causes bad things to happen
-		//CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 );
 		int iNoPhysicsDamage = g_pGameRules->Damage_GetNoPhysicsForce();
-		//CTakeDamageInfo info( pPlayer, pPlayer, 10000.0, DMG_GENERIC | DMG_REMOVENORAGDOLL | iNoPhysicsDamage );
-		CTakeDamageInfo info( this, this, 10000.0, DMG_GENERIC | DMG_REMOVENORAGDOLL | iNoPhysicsDamage );
+		CTakeDamageInfo info( pPlayer, pPlayer, 10000.0, DMG_GENERIC | DMG_REMOVENORAGDOLL | iNoPhysicsDamage );
 		pTarget->TakeDamage( info );
 
-		if (  !pTarget->IsPlayer() )
+		if ( pTarget != pPlayer )
 		{
 			UTIL_Remove( pTarget );
 		}

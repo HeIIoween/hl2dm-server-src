@@ -29,8 +29,8 @@ ConVar    sk_npc_dmg_crowbar		( "sk_npc_dmg_crowbar","0");
 // CWeaponCrowbar
 //-----------------------------------------------------------------------------
 
-/*IMPLEMENT_SERVERCLASS_ST(CWeaponCrowbar, DT_WeaponCrowbar)
-END_SEND_TABLE()*/
+IMPLEMENT_SERVERCLASS_ST(CWeaponCrowbar, DT_WeaponCrowbar)
+END_SEND_TABLE()
 
 #ifndef HL2MP
 LINK_ENTITY_TO_CLASS( weapon_crowbar, CWeaponCrowbar );

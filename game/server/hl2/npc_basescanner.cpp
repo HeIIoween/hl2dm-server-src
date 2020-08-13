@@ -8,11 +8,11 @@
 #include "npcevent.h"
 #include "ai_basenpc_physicsflyer.h"
 #include "weapon_physcannon.h"
+#include "hl2_player.h"
 #include "npc_scanner.h"
 #include "IEffects.h"
 #include "explode.h"
 #include "ai_route.h"
-#include "npc_basescanner.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1357,8 +1357,8 @@ bool CNPC_BaseScanner::IsEnemyPlayerInSuit()
 {
 	if( GetEnemy() && GetEnemy()->IsPlayer() )
 	{
-		CBasePlayer *pPlayer = NULL;
-		pPlayer = (CBasePlayer *)GetEnemy();
+		CHL2_Player *pPlayer = NULL;
+		pPlayer = (CHL2_Player *)GetEnemy();
 
 		if( pPlayer && pPlayer->IsSuitEquipped() )
 		{

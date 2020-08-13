@@ -101,13 +101,13 @@ BEGIN_DATADESC( CPropCrane )
 
 END_DATADESC()
 
-/*IMPLEMENT_SERVERCLASS_ST(CPropCrane, DT_PropCrane)
+IMPLEMENT_SERVERCLASS_ST(CPropCrane, DT_PropCrane)
 	SendPropEHandle(SENDINFO(m_hPlayer)),
 	SendPropBool(SENDINFO(m_bMagnetOn)),
 	SendPropBool(SENDINFO(m_bEnterAnimOn)),
 	SendPropBool(SENDINFO(m_bExitAnimOn)),
 	SendPropVector(SENDINFO(m_vecEyeExitEndpoint), -1, SPROP_COORD),
-END_SEND_TABLE();*/
+END_SEND_TABLE();
 
 
 //------------------------------------------------

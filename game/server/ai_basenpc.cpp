@@ -23,9 +23,9 @@
 #include "game.h"
 #include "shot_manipulator.h"
 
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 #include "ai_interactions.h"
-//#include "hl2_gamerules.h"
+#include "hl2_gamerules.h"
 #endif // HL2_DLL
 
 #include "ai_network.h"
@@ -70,9 +70,9 @@
 #include "checksum_crc.h"
 #include "iservervehicle.h"
 #include "filters.h"
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 #include "npc_bullseye.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "weapon_physcannon.h"
 #endif
 #include "waterbullet.h"
@@ -661,14 +661,10 @@ void CAI_BaseNPC::Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, bo
 ConVar ai_block_damage( "ai_block_damage","0" );
 
 #include "gamevars_shared.h"
-#include "hl2mp.ru\hl2mp_player_fix.h"
 bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &currentinfo )
 {
 	if ( ai_block_damage.GetBool() )
 		return false;
-
-	if( IsAdmin( currentinfo.GetAttacker() ) )
-		return true;
 
 	CTakeDamageInfo info = currentinfo;
 	if( info.GetAttacker() && info.GetAttacker()->GetPlayerMP() )
@@ -1458,7 +1454,7 @@ void CAI_BaseNPC::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::FireBullets( const FireBulletsInfo_t &info )
 {
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	// If we're shooting at a bullseye, become perfectly accurate if the bullseye demands it
 	if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
 	{
@@ -5899,7 +5895,7 @@ void CAI_BaseNPC::CheckTarget( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 CAI_BaseNPC *CAI_BaseNPC::CreateCustomTarget( const Vector &vecOrigin, float duration )
 {
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	CNPC_Bullseye *pTarget = (CNPC_Bullseye*)CreateEntityByName( "npc_bullseye" );
 
 	ASSERT( pTarget != NULL );
@@ -9537,7 +9533,7 @@ Vector CAI_BaseNPC::GetShootEnemyDir( const Vector &shootOrigin, bool bNoisy )
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::CollectShotStats( const Vector &vecShootOrigin, const Vector &vecShootDir )
 {
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	if( ai_shot_stats.GetBool() != 0 && GetEnemy()->IsPlayer() )
 	{
 		int iterations = ai_shot_stats_term.GetInt();
@@ -9578,7 +9574,7 @@ void CAI_BaseNPC::CollectShotStats( const Vector &vecShootOrigin, const Vector &
 #endif
 }
 
-#if !defined( HL2_DLL )
+#ifdef HL2_DLL
 //-----------------------------------------------------------------------------
 // Purpose: Return the actual position the NPC wants to fire at when it's trying
 //			to hit it's current enemy.
@@ -10437,9 +10433,7 @@ bool CAI_BaseNPC::ShouldFadeOnDeath( void )
 	else
 	{
 		// if flagged to fade out
-		//return HasSpawnFlags(SF_NPC_FADE_CORPSE);
-		//Чтоб все трупы исчезали!
-		return true;
+		return HasSpawnFlags(SF_NPC_FADE_CORPSE);
 	}
 }
 
@@ -11760,14 +11754,13 @@ void CAI_BaseNPC::CleanupScriptsOnTeleport( bool bEnrouteAsWell )
 //-----------------------------------------------------------------------------
 bool CAI_BaseNPC::HandleInteraction(int interactionType, void *data, CBaseCombatCharacter* sourceEnt)
 {
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	if ( interactionType == g_interactionBarnacleVictimGrab )
 	{
 		// Make the victim stop thinking so they're as good as dead without 
 		// shocking the system by destroying the entity.
-		// Крашит ядовитого зомби
-		//StopLoopingSounds();
-		//BarnacleDeathSound();
+		StopLoopingSounds();
+		BarnacleDeathSound();
  		SetThink( NULL );
 
 		// Gag the NPC so they won't talk anymore

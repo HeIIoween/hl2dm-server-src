@@ -40,10 +40,6 @@ void CPointTrigger::Spawn(void)
 
 void CPointTrigger::RadiusThink( void )
 {
-	SetNextThink( gpGlobals->curtime + 0.1f );
-	if( m_bDisabled )
-		return;
-
 	CBaseEntity *ent = NULL;
 	while ((ent = gEntList.NextEnt(ent)) != NULL)
 	{
@@ -53,9 +49,10 @@ void CPointTrigger::RadiusThink( void )
 			if( PassesTriggerFilters(ent) ) {
 				StartTouch( ent );
 				if( m_bOneTouch ) {
-					Remove();
+					return;
 				}
 			}
 		}
 	}
+	SetNextThink( gpGlobals->curtime + 0.1f );
 }

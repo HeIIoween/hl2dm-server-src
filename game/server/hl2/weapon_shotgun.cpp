@@ -31,7 +31,7 @@ class CWeaponShotgun : public CBaseHLCombatWeapon
 public:
 	DECLARE_CLASS( CWeaponShotgun, CBaseHLCombatWeapon );
 
-	//DECLARE_SERVERCLASS();
+	DECLARE_SERVERCLASS();
 
 private:
 	bool	m_bNeedPump;		// When emptied completely
@@ -88,8 +88,8 @@ public:
 	CWeaponShotgun(void);
 };
 
-/*IMPLEMENT_SERVERCLASS_ST(CWeaponShotgun, DT_WeaponShotgun)
-END_SEND_TABLE()*/
+IMPLEMENT_SERVERCLASS_ST(CWeaponShotgun, DT_WeaponShotgun)
+END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_shotgun, CWeaponShotgun );
 PRECACHE_WEAPON_REGISTER(weapon_shotgun);

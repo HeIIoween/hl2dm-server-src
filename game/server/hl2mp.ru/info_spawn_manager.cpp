@@ -20,7 +20,6 @@ public:
 
 LINK_ENTITY_TO_CLASS( info_spawn_manager, ism );
 LINK_ENTITY_TO_CLASS( info_player_checkpoint, ism );
-LINK_ENTITY_TO_CLASS( info_checkpoint, ism );
 
 BEGIN_DATADESC( ism )
 
@@ -34,7 +33,7 @@ END_DATADESC()
 void ism::SetCheckPoint( inputdata_t &inputData )
 {
 	CBaseEntity *pMaster = gEntList.FindEntityByName( NULL, inputData.value.StringID(), NULL, this );
-	CHLSpawnPoint *pSpot = dynamic_cast<CHLSpawnPoint *>( pMaster );
+	CSpawnPoint *pSpot = dynamic_cast<CSpawnPoint *>( pMaster );
 	
 	if( pSpot ) {
 		DisableOther( pSpot );
@@ -42,7 +41,7 @@ void ism::SetCheckPoint( inputdata_t &inputData )
 		m_hSpot = pSpot;
 		return;
 	}
-	pSpot = (CHLSpawnPoint *)CreateEntityByName("info_player_deathmatch");
+	pSpot = (CSpawnPoint *)CreateEntityByName("info_player_deathmatch");
 	if( pSpot ) {
 		DisableOther( pSpot );
 		pSpot->SetLocalOrigin( GetAbsOrigin() );
@@ -69,7 +68,7 @@ void ism::DisableOther( CBaseEntity *pIgnore )
 		CBaseEntity *pSpawn = NULL;
 		while ( ( pSpawn = gEntList.FindEntityByClassname( pSpawn, gpPointListDelete[i] ) ) != NULL )
 		{
-			CHLSpawnPoint *pSpot = dynamic_cast<CHLSpawnPoint *>( pSpawn );
+			CSpawnPoint *pSpot = dynamic_cast<CSpawnPoint *>( pSpawn );
 			if( pSpot && ( pSpot != pIgnore ) ) {
 				pSpot->m_iDisabled = TRUE;
 			}
@@ -90,8 +89,6 @@ void ism::MovePlayers( inputdata_t &inputData )
 {
 	if( m_hSpot )
 		TpAllPlayer( m_hSpot->GetAbsOrigin(), m_hSpot->GetAbsAngles() );
-	else	
-		TpAllPlayer( GetAbsOrigin(), GetAbsAngles() );
 	engine->ServerCommand( "sm_savetp_clearpoint\n" );
 	m_OnFinish.FireOutput( inputData.pActivator, inputData.pCaller );
 }
@@ -102,8 +99,7 @@ void ism::TpAllPlayer( const Vector newPosition, const QAngle newAngles  )
 	{
 		CBasePlayer *pPlayer = UTIL_PlayerByIndex( i );
 		if( pPlayer && pPlayer->IsConnected() && pPlayer->IsAlive() && !pPlayer->IsInAVehicle() ) {
-			pPlayer->SetAbsOrigin( newPosition );
-			pPlayer->SetAbsAngles( newAngles );
+			pPlayer->Teleport( &newPosition, &newAngles, NULL );
 		}
 	}
 }

@@ -15,11 +15,10 @@
 #include "weapon_stunstick.h"
 #include "basegrenade_shared.h"
 #include "ai_route.h"
-#include "player.h"
-#include "soundenvelope.h"
+#include "hl2_player.h"
 #include "iservervehicle.h"
 #include "items.h"
-#include "gamerules.h"
+#include "hl2_gamerules.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -3107,11 +3106,13 @@ void CNPC_MetroPolice::Event_Killed( const CTakeDamageInfo &info )
 
 	if ( pPlayer != NULL )
 	{
+		CHalfLife2 *pHL2GameRules = static_cast<CHalfLife2 *>(g_pGameRules);
+
 		// Attempt to drop health
-		if ( g_pGameRules->NPC_ShouldDropHealth( pPlayer ) )
+		if ( pHL2GameRules->NPC_ShouldDropHealth( pPlayer ) )
 		{
 			DropItem( "item_healthvial", WorldSpaceCenter()+RandomVector(-4,4), RandomAngle(0,360) );
-			g_pGameRules->NPC_DroppedHealth();
+			pHL2GameRules->NPC_DroppedHealth();
 		}
 	}
 
@@ -5115,8 +5116,8 @@ void CNPC_MetroPolice::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 
 	if ( pEvent->pObjects[otherIndex]->GetGameFlags() & FVPHYSICS_PLAYER_HELD )
 	{
-		//CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>(UTIL_PlayerByIndex( 1 ));
-		CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
+		CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>(UTIL_PlayerByIndex( 1 ));
+
 		// See if it's being held by the player
 		if ( pPlayer != NULL && pPlayer->IsHoldingEntity( pHitEntity ) )
 		{

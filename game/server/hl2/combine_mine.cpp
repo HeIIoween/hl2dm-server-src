@@ -875,7 +875,7 @@ float CBounceBomb::FindNearestNPC()
 	// finally, check the player.
 	CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
 
-	if( pPlayer && pPlayer->IsAlive() && !(pPlayer->GetFlags() & FL_NOTARGET) )
+	if( pPlayer && !(pPlayer->GetFlags() & FL_NOTARGET) )
 	{
 		float flDist = (pPlayer->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
 

@@ -6,7 +6,7 @@
 
 #include "cbase.h"
 #include "weapon_physcannon.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "saverestore_utlvector.h"
 #include "triggers.h"
 

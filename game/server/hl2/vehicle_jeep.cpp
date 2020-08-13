@@ -17,7 +17,7 @@
 #include "soundent.h"
 #include "grenade_ar2.h"
 #include "te_effect_dispatch.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "ndebugoverlay.h"
 #include "movevars_shared.h"
 #include "bone_setup.h"
@@ -139,11 +139,9 @@ BEGIN_DATADESC( CPropJeep )
 	DEFINE_THINKFUNC( JeepSeagullThink ),
 END_DATADESC()
 
-#ifdef CSTRIKE_DLL
-IMPLEMENT_SERVERCLASS_ST( CPropJeep, DT_PropJeep )
+/*IMPLEMENT_SERVERCLASS_ST( CPropJeep, DT_PropJeep )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
-END_SEND_TABLE();
-#endif
+END_SEND_TABLE();*/
 
 // This is overriden for the episodic jeep
 #ifndef HL2_EPISODIC
@@ -336,7 +334,7 @@ int CPropJeep::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	}
 
 	//Check to do damage to driver
-	if ( GetDriver() != NULL )
+	if ( GetDriver() )
 	{
 		// Never take crush damage
 		if ( info.GetDamageType() & DMG_CRUSH )

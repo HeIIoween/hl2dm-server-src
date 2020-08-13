@@ -91,7 +91,7 @@ bool CAI_Pathfinder::UseStrongOptimizations()
 		return false;
 	}
 
-#ifndef HL2_DLL
+#ifdef HL2_DLL
 	if( GetOuter()->Classify() == CLASS_PLAYER_ALLY_VITAL )
 	{
 		return false;

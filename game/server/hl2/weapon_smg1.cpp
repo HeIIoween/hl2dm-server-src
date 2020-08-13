@@ -31,7 +31,7 @@ public:
 
 	CWeaponSMG1();
 
-	//DECLARE_SERVERCLASS();
+	DECLARE_SERVERCLASS();
 	
 	void	Precache( void );
 	void	AddViewKick( void );
@@ -68,8 +68,8 @@ protected:
 	float	m_flNextGrenadeCheck;
 };
 
-/*IMPLEMENT_SERVERCLASS_ST(CWeaponSMG1, DT_WeaponSMG1)
-END_SEND_TABLE()*/
+IMPLEMENT_SERVERCLASS_ST(CWeaponSMG1, DT_WeaponSMG1)
+END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_smg1, CWeaponSMG1 );
 PRECACHE_WEAPON_REGISTER(weapon_smg1);

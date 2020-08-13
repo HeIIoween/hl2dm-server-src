@@ -294,7 +294,7 @@ int CNPC_Controller::IRelationPriority( CBaseEntity *pTarget )
 {
 	if ( pTarget->Classify() == CLASS_PLAYER )
 	{
-		// return BaseClass::IRelationPriority ( pTarget ) + 1;
+		 return BaseClass::IRelationPriority ( pTarget ) + 1;
 	}
 
 	return BaseClass::IRelationPriority( pTarget );

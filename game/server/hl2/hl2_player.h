@@ -27,7 +27,7 @@ enum HL2PlayerPhysFlag_e
 {
 	// 1 -- 5 are used by enum PlayerPhysFlag_e in player.h
 
-	//PFLAG_ONBARNACLE	= ( 1<<6 )		// player is hangning from the barnalce
+	PFLAG_ONBARNACLE	= ( 1<<6 )		// player is hangning from the barnalce
 };
 
 class IPhysicsPlayerController;
@@ -283,7 +283,7 @@ public:
 
 	CSoundPatch *m_sndLeeches;
 	CSoundPatch *m_sndWaterSplashes;
-	CNetworkVarEmbedded( CHL2PlayerLocalData, m_HL2Local );
+
 protected:
 	virtual void		PreThink( void );
 	virtual	void		PostThink( void );
@@ -302,7 +302,7 @@ private:
 	Class_T				m_nControlClass;			// Class when player is controlling another entity
 	// This player's HL2 specific data that should only be replicated to 
 	//  the player and not to other players.
-	//CNetworkVarEmbedded( CHL2PlayerLocalData, m_HL2Local );
+	CNetworkVarEmbedded( CHL2PlayerLocalData, m_HL2Local );
 
 	float				m_flTimeAllSuitDevicesOff;
 

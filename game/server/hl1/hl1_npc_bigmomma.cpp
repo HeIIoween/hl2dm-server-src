@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -428,7 +428,7 @@ void CNPC_BigMomma::Spawn()
 	m_iszTarget = m_iszNetName;
 
 	NPCInit();
-	AddEFlags( EFL_NO_DISSOLVE );
+
 	BaseClass::Spawn();
 }
 
@@ -765,7 +765,8 @@ void CNPC_BigMomma::RunTask( const Task_t *pTask )
 	{
 	case TASK_DIE:
 		if ( gpGlobals->curtime > m_flWaitFinished ) {
-			Dissolve(NULL, gpGlobals->curtime + 3.0, true);
+			SetNextThink( gpGlobals->curtime + 0.15 );
+			SetThink( &CBaseEntity::SUB_Remove );
 		}
 
 		break;

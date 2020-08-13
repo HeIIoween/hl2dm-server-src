@@ -10,7 +10,7 @@
 //#include "npc_alyx_episodic.h"
 #include "particle_parse.h"
 #include "particle_system.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "in_buttons.h"
 #include "vphysics/friction.h"
 #include "vphysicsupdateai.h"
@@ -943,13 +943,13 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
 
-	/*CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
+	CBasePlayer *pPlayer = UTIL_GetNearestPlayer( GetAbsOrigin() );
 	if( pPlayer ) {
 		CSingleUserRecipientFilter filter(pPlayer);
 		UserMessageBegin( filter, "UpdateJalopyRadar" );
 		WRITE_BYTE( 0 ); // end marker
 		MessageEnd();	// send message
-	}*/
+	}
 }
 
 ConVar jalopy_cargo_anim_time( "jalopy_cargo_anim_time", "1.0" );
@@ -1108,7 +1108,7 @@ void CPropJeepEpisodic::ReleasePropFromCargoHold( void )
 		m_hCargoTrigger->IgnoreTouches( m_hCargoProp );
 	}
 }
-#include "hl2mp_player_fix.h"
+
 //-----------------------------------------------------------------------------
 // Purpose: If the player is trying to pull the cargo out of the hold using the physcannon, let him
 // Output : Returns the cargo to pick up, if all the conditions are met
@@ -1120,11 +1120,12 @@ CBaseEntity *CPropJeepEpisodic::OnFailedPhysGunPickup( Vector vPhysgunPos )
 	{
 		// Player's forward direction
 		Vector vecPlayerForward;
-		CBasePlayer *pPlayer = UTIL_GetNearestPlayer( m_hCargoProp->GetAbsOrigin() );
-		if( pPlayer == NULL )
-			return NULL;
+		CBasePlayer *pPlayer = GetPlayerMP();
 		
-		if( GetPlayerMP() && GetPlayerMP() != pPlayer && !IsAdmin( pPlayer ) )
+		if ( pPlayer == NULL )
+			pPlayer = UTIL_GetNearestPlayer( m_hCargoProp->GetAbsOrigin() );
+
+		if( pPlayer == NULL )
 			return NULL;
 
 		pPlayer->EyeVectors( &vecPlayerForward );

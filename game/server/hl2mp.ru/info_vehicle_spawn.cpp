@@ -1,6 +1,5 @@
 #include "cbase.h"
 #include "vehicle_base.h"
-#include "eventqueue.h"
 
 class vehicleSpawn : public CBaseEntity
 {
@@ -15,7 +14,6 @@ public:
 	const char *m_model;
 	int m_vehicletype;
 	bool p_EnableGun;
-	float m_fSpawnNext;
 	EHANDLE m_hLastCar;
 };
 
@@ -46,40 +44,13 @@ const char *gpVehicleList[] = {
 
 void vehicleSpawn::TimerThink( void )
 {
-	SetNextThink( gpGlobals->curtime );
+	SetNextThink( gpGlobals->curtime + 5.0 );
+
+	if( m_hLastCar && m_hLastCar->GetPlayerMP() )
+		m_hLastCar = NULL;
 
 	if( !m_hLastCar ) 
 		CreateVehicle();
-
-	CPropVehicleDriveable *pJeep = dynamic_cast< CPropVehicleDriveable * >( m_hLastCar->GetBaseEntity() );
-
-	if( pJeep ) {
-		CBasePlayer *pPlayer = ToBasePlayer( pJeep->GetDriver() );
-		if( !pPlayer )
-			return;
-		
-		//Удаляем старые машины этого игрока с таким классом
-		CPropVehicleDriveable *pEnt = NULL;
-		while ( ( pEnt = (CPropVehicleDriveable *)gEntList.FindEntityByClassname( pEnt, pJeep->GetClassname() ) ) != NULL )
-		{
-			if (pEnt->GetPlayerMP() && pEnt->GetPlayerMP() == pPlayer && pEnt->GetOwnerEntity() == this ) {
-				//Проверим чтоб в машине, не было никого(админы), если есть высаживаем.
-				CBasePlayer *pDriver = ToBasePlayer( pEnt->GetDriver() );
-				if( pDriver )
-					 pDriver->LeaveVehicle();
-				
-				pEnt->SetPlayerMP( NULL );
-				pEnt->SetOwnerEntity( NULL );
-				g_EventQueue.AddEvent( pEnt, "Lock", 0.0f, NULL, NULL );
-				//Растворим машину
-				pEnt->Dissolve(NULL, gpGlobals->curtime + 5.0, false);
-			}
-		}
-
-		m_hLastCar->SetPlayerMP( pPlayer );
-		m_hLastCar = NULL;
-		SetNextThink( gpGlobals->curtime + 5.0 );
-	}
 }
 
 void vehicleSpawn::CreateVehicle( void )

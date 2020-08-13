@@ -14,7 +14,7 @@
 #include "gib.h"
 #include "ai_default.h"
 #include "activitylist.h"
-#include "player.h"
+#include "hl2_player.h"
 #include "vstdlib/random.h"
 #include "physics_saverestore.h"
 #include "vcollide_parse.h"
@@ -191,12 +191,12 @@ BEGIN_DATADESC( CNPC_Barnacle )
 
 END_DATADESC()
 
-/*IMPLEMENT_SERVERCLASS_ST( CNPC_Barnacle, DT_Barnacle )
+IMPLEMENT_SERVERCLASS_ST( CNPC_Barnacle, DT_Barnacle )
 	SendPropFloat(  SENDINFO( m_flAltitude ), 0, SPROP_NOSCALE),
 	SendPropVector( SENDINFO( m_vecRoot ), 0, SPROP_COORD ),
 	SendPropVector( SENDINFO( m_vecTip ), 0, SPROP_COORD ), 
 	SendPropVector( SENDINFO( m_vecTipDrawOffset ), 0, SPROP_NOSCALE ), 
-END_SEND_TABLE()*/
+END_SEND_TABLE()
 
 
 //=========================================================

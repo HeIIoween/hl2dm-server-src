@@ -6083,7 +6083,7 @@ void CBaseEntity::SetLocalOrigin( const Vector& origin )
 	}
 }
 
-void CBaseEntity::SetLocalAngles( const QAngle& newangles )
+void CBaseEntity::SetLocalAngles( const QAngle& angles )
 {
 	// NOTE: The angle normalize is a little expensive, but we can save
 	// a bunch of time in interpolation if we don't have to invalidate everything
@@ -6091,18 +6091,13 @@ void CBaseEntity::SetLocalAngles( const QAngle& newangles )
 
 	// FIXME: The normalize caused problems in server code like momentary_rot_button that isn't
 	//        handling things like +/-180 degrees properly. This should be revisited.
-	QAngle angles = newangles;
-	if( ClassMatches( "func_rotating" ) ) {
-		QAngle angleNormalize( AngleNormalize( angles.x ), AngleNormalize( angles.y ), AngleNormalize( angles.z ) );
-		angles = angleNormalize;
-	}
+	//QAngle angleNormalize( AngleNormalize( angles.x ), AngleNormalize( angles.y ), AngleNormalize( angles.z ) );
 
 	// Safety check against NaN's or really huge numbers
 	if ( !IsEntityQAngleReasonable( angles ) )
 	{
 		if ( CheckEmitReasonablePhysicsSpew() )
 		{
-
 			Warning( "Bad SetLocalAngles(%f,%f,%f) on %s\n", angles.x, angles.y, angles.z, GetDebugName() );
 		}
 		AssertMsg( false, "Bad SetLocalAngles(%f,%f,%f) on %s\n", angles.x, angles.y, angles.z, GetDebugName() );
